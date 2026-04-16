@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#080706" />
+        <title>CINEVERSE Booking</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body class="booking-page">
+        <svg class="icon-sprite" aria-hidden="true" focusable="false">
+            <symbol id="i-film" viewBox="0 0 24 24">
+                <rect x="3.5" y="4.5" width="17" height="15" rx="1.8"></rect>
+                <path d="M8 4.5v15M16 4.5v15M3.5 8.5h4.5M3.5 12h4.5M3.5 15.5h4.5M15.5 8.5h5M15.5 12h5M15.5 15.5h5"></path>
+            </symbol>
+            <symbol id="i-play" viewBox="0 0 24 24">
+                <path d="M8 6.5v11l9-5.5z" fill="currentColor" stroke="none"></path>
+            </symbol>
+            <symbol id="i-user" viewBox="0 0 24 24">
+                <path d="M12 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
+                <path d="M5 19c1.6-3 4-4.5 7-4.5S17.4 16 19 19"></path>
+            </symbol>
+            <symbol id="i-sparkle" viewBox="0 0 24 24">
+                <path d="M12 3l1.4 4.6L18 9l-4.6 1.4L12 15l-1.4-4.6L6 9l4.6-1.4z"></path>
+                <path d="M19 4l.6 2L21.5 7l-1.9.6L19 9.5l-.6-1.9L16.5 7l1.9-.6z"></path>
+            </symbol>
+            <symbol id="i-settings" viewBox="0 0 24 24">
+                <path d="M12 9.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6z"></path>
+                <path d="M4.7 13.2v-2.4l2-.5a5.9 5.9 0 0 1 .7-1.7L6.3 6.8l1.7-1.7 1.8 1.1c.5-.3 1.1-.5 1.7-.7l.5-2h2.4l.5 2c.6.2 1.2.4 1.7.7l1.8-1.1 1.7 1.7-1.1 1.8c.3.5.5 1.1.7 1.7l2 .5v2.4l-2 .5a5.9 5.9 0 0 1-.7 1.7l1.1 1.8-1.7 1.7-1.8-1.1c-.5.3-1.1.5-1.7.7l-.5 2h-2.4l-.5-2a5.9 5.9 0 0 1-1.7-.7l-1.8 1.1-1.7-1.7 1.1-1.8a5.9 5.9 0 0 1-.7-1.7z"></path>
+            </symbol>
+            <symbol id="i-clock" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="8"></circle>
+                <path d="M12 7.5V12l3 2"></path>
+            </symbol>
+            <symbol id="i-check" viewBox="0 0 24 24">
+                <path d="m5.5 12.5 4.2 4.2L18.5 8"></path>
+            </symbol>
+            <symbol id="i-calendar" viewBox="0 0 24 24">
+                <rect x="4" y="6" width="16" height="14" rx="2"></rect>
+                <path d="M8 4v4M16 4v4M4 10h16"></path>
+            </symbol>
+            <symbol id="i-map-pin" viewBox="0 0 24 24">
+                <path d="M12 20s6-5.4 6-10a6 6 0 1 0-12 0c0 4.6 6 10 6 10z"></path>
+                <circle cx="12" cy="10" r="2.2"></circle>
+            </symbol>
+            <symbol id="i-credit-card" viewBox="0 0 24 24">
+                <rect x="3.5" y="6" width="17" height="12" rx="2"></rect>
+                <path d="M3.5 10h17"></path>
+            </symbol>
+            <symbol id="i-mail" viewBox="0 0 24 24">
+                <path d="M4.5 7.5h15v9h-15z"></path>
+                <path d="m5 8 7 5 7-5"></path>
+            </symbol>
+            <symbol id="i-instagram" viewBox="0 0 24 24">
+                <rect x="5" y="5" width="14" height="14" rx="4"></rect>
+                <circle cx="12" cy="12" r="3.2"></circle>
+                <circle cx="16.3" cy="7.7" r=".8" fill="currentColor" stroke="none"></circle>
+            </symbol>
+            <symbol id="i-youtube" viewBox="0 0 24 24">
+                <path d="M4.5 8.5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2z"></path>
+                <path d="m10 10 5 2.5-5 2.5z" fill="currentColor" stroke="none"></path>
+            </symbol>
+            <symbol id="i-twitter" viewBox="0 0 24 24">
+                <path d="M18.5 7.5a5.7 5.7 0 0 1-1.7.5A3 3 0 0 0 18 6.3a6.3 6.3 0 0 1-2 .8 3 3 0 0 0-5.2 2v.6a8.4 8.4 0 0 1-6.1-3.1 3 3 0 0 0 .9 4 2.8 2.8 0 0 1-1.4-.4v.1a3 3 0 0 0 2.4 3 2.8 2.8 0 0 1-1.4.1 3 3 0 0 0 2.8 2.1 6 6 0 0 1-3.7 1.3H5a8.4 8.4 0 0 0 4.6 1.4c5.5 0 8.6-4.7 8.6-8.8v-.4a6.2 6.2 0 0 0 1.5-1.6z"></path>
+            </symbol>
+        </svg>
+
+        <header class="site-header" id="top">
+            <div class="container nav-shell">
+                <a class="brand" href="home.html" aria-label="CINEVERSE home">
+                    <svg class="icon icon-film"><use href="#i-film"></use></svg>
+                    <span class="brand-lockup">
+                        <span class="brand-wordmark">CINEVERSE</span>
+                        <span class="brand-submark">Films</span>
+                    </span>
+                </a>
+
+                <nav class="primary-nav" aria-label="Primary">
+                    <a href="films.html">Films</a>
+                    <a href="directors.html">Directors</a>
+                    <a href="genres.html">Genres</a>
+                    <a href="home.html#awards">Awards</a>
+                    <a href="home.html#about">About</a>
+                </nav>
+
+                <div class="nav-actions">
+                    <a class="mini-link" href="ai-recommendations.html">
+                        <svg class="icon"><use href="#i-sparkle"></use></svg>
+                        <span>AI Picks</span>
+                    </a>
+                    <a class="mini-link is-muted" href="admin.html">
+                        <svg class="icon"><use href="#i-settings"></use></svg>
+                        <span>Admin</span>
+                    </a>
+                    <a class="cine-button cine-button-gold" href="booking.html">
+                        <svg class="icon"><use href="#i-play"></use></svg>
+                        <span>Book Now</span>
+                    </a>
+                    <a class="cine-button cine-button-outline" href="login.html">
+                        <svg class="icon"><use href="#i-user"></use></svg>
+                        <span>Sign In</span>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <main data-booking-flow>
+            <section class="booking-hero">
+                <div class="container booking-hero-shell">
+                    <h1 class="booking-hero-title">Book Your Seat</h1>
+                    <p class="booking-hero-copy">Experience cinema like never before</p>
+
+                    <div class="booking-stepper" aria-label="Booking progress">
+                        <div class="booking-step is-active" data-step-indicator="1">
+                            <span class="booking-step-circle">1</span>
+                            <span class="booking-step-label">Film</span>
+                        </div>
+                        <div class="booking-step" data-step-indicator="2">
+                            <span class="booking-step-circle">2</span>
+                            <span class="booking-step-label">Showtime</span>
+                        </div>
+                        <div class="booking-step" data-step-indicator="3">
+                            <span class="booking-step-circle">3</span>
+                            <span class="booking-step-label">Seats</span>
+                        </div>
+                        <div class="booking-step" data-step-indicator="4">
+                            <span class="booking-step-circle">4</span>
+                            <span class="booking-step-label">Checkout</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="booking-flow-section">
+                <div class="container">
+                    <section class="booking-panel" data-booking-panel="1">
+                        <h2 class="booking-section-title">Select Film</h2>
+
+                        <div class="booking-film-grid">
+                            <button class="booking-film-card" type="button" data-film-card data-film-title="Interstellar" data-film-year="2014" data-film-runtime="2h 49m">
+                                <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=300&h=450&fit=crop" alt="Interstellar poster" />
+                                <span>Interstellar</span>
+                                <span class="booking-film-check"><svg class="icon"><use href="#i-check"></use></svg></span>
+                            </button>
+
+                            <button class="booking-film-card is-selected" type="button" data-film-card data-film-title="Inception" data-film-year="2010" data-film-runtime="2h 28m">
+                                <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=300&h=450&fit=crop" alt="Inception poster" />
+                                <span>Inception</span>
+                                <span class="booking-film-check"><svg class="icon"><use href="#i-check"></use></svg></span>
+                            </button>
+
+                            <button class="booking-film-card" type="button" data-film-card data-film-title="The Dark Knight" data-film-year="2008" data-film-runtime="2h 32m">
+                                <img src="https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=300&h=450&fit=crop" alt="The Dark Knight poster" />
+                                <span>The Dark Knight</span>
+                                <span class="booking-film-check"><svg class="icon"><use href="#i-check"></use></svg></span>
+                            </button>
+                        </div>
+
+                        <div class="booking-bottom-bar booking-bottom-bar-end">
+                            <button class="booking-secondary-button" type="button" disabled>Back</button>
+                            <button class="booking-primary-button" type="button" data-booking-next>Continue</button>
+                        </div>
+                    </section>
+
+                    <section class="booking-panel" data-booking-panel="2" hidden>
+                        <h2 class="booking-section-title">Select Showtime</h2>
+
+                        <div class="booking-showtime-grid">
+                            <button class="booking-showtime-card" type="button" data-showtime-card data-time="14:30" data-date="Apr 15" data-theater="IMAX Theater">
+                                <span class="booking-showtime-time">
+                                    <svg class="icon"><use href="#i-clock"></use></svg>
+                                    <span>14:30</span>
+                                </span>
+                                <span class="booking-showtime-meta">
+                                    <span><svg class="icon"><use href="#i-calendar"></use></svg>Apr 15</span>
+                                    <span><svg class="icon"><use href="#i-map-pin"></use></svg>IMAX Theater</span>
+                                </span>
+                            </button>
+
+                            <button class="booking-showtime-card is-selected" type="button" data-showtime-card data-time="17:00" data-date="Apr 15" data-theater="Dolby Theater">
+                                <span class="booking-showtime-time">
+                                    <svg class="icon"><use href="#i-clock"></use></svg>
+                                    <span>17:00</span>
+                                </span>
+                                <span class="booking-showtime-meta">
+                                    <span><svg class="icon"><use href="#i-calendar"></use></svg>Apr 15</span>
+                                    <span><svg class="icon"><use href="#i-map-pin"></use></svg>Dolby Theater</span>
+                                </span>
+                            </button>
+
+                            <button class="booking-showtime-card" type="button" data-showtime-card data-time="19:30" data-date="Apr 15" data-theater="IMAX Theater">
+                                <span class="booking-showtime-time">
+                                    <svg class="icon"><use href="#i-clock"></use></svg>
+                                    <span>19:30</span>
+                                </span>
+                                <span class="booking-showtime-meta">
+                                    <span><svg class="icon"><use href="#i-calendar"></use></svg>Apr 15</span>
+                                    <span><svg class="icon"><use href="#i-map-pin"></use></svg>IMAX Theater</span>
+                                </span>
+                            </button>
+
+                            <button class="booking-showtime-card" type="button" data-showtime-card data-time="21:00" data-date="Apr 15" data-theater="Classic Hall">
+                                <span class="booking-showtime-time">
+                                    <svg class="icon"><use href="#i-clock"></use></svg>
+                                    <span>21:00</span>
+                                </span>
+                                <span class="booking-showtime-meta">
+                                    <span><svg class="icon"><use href="#i-calendar"></use></svg>Apr 15</span>
+                                    <span><svg class="icon"><use href="#i-map-pin"></use></svg>Classic Hall</span>
+                                </span>
+                            </button>
+                        </div>
+
+                        <div class="booking-bottom-bar">
+                            <button class="booking-secondary-button" type="button" data-booking-prev>Back</button>
+                            <button class="booking-primary-button" type="button" data-booking-next>Continue</button>
+                        </div>
+                    </section>
+
+                    <section class="booking-panel" data-booking-panel="3" hidden>
+                        <h2 class="booking-section-title">Select Seats</h2>
+
+                        <div class="booking-seat-pricing">
+                            <button class="booking-tier is-selected" type="button" data-ticket-tier data-tier="Standard" data-price="12">
+                                <strong>Standard</strong>
+                                <span>$12</span>
+                            </button>
+                            <button class="booking-tier" type="button" data-ticket-tier data-tier="Premium" data-price="18">
+                                <strong>Premium</strong>
+                                <span>$18</span>
+                            </button>
+                        </div>
+
+                        <div class="booking-seat-screen">
+                            <div class="booking-seat-screen-bar"></div>
+                            <div class="booking-seat-screen-label">Screen</div>
+                        </div>
+
+                        <div class="booking-seat-layout" aria-label="Seat map">
+                            <div class="booking-seat-row">
+                                <span class="booking-seat-row-label">A</span>
+                                <button class="booking-seat" type="button" data-seat="A1"></button>
+                                <button class="booking-seat" type="button" data-seat="A2"></button>
+                                <button class="booking-seat" type="button" data-seat="A3"></button>
+                                <button class="booking-seat" type="button" data-seat="A4"></button>
+                                <button class="booking-seat" type="button" data-seat="A5"></button>
+                                <button class="booking-seat" type="button" data-seat="A6"></button>
+                                <button class="booking-seat" type="button" data-seat="A7"></button>
+                                <button class="booking-seat" type="button" data-seat="A8"></button>
+                                <button class="booking-seat" type="button" data-seat="A9"></button>
+                                <button class="booking-seat" type="button" data-seat="A10"></button>
+                                <button class="booking-seat" type="button" data-seat="A11"></button>
+                                <button class="booking-seat" type="button" data-seat="A12"></button>
+                            </div>
+                            <div class="booking-seat-row">
+                                <span class="booking-seat-row-label">B</span>
+                                <button class="booking-seat" type="button" data-seat="B1"></button>
+                                <button class="booking-seat" type="button" data-seat="B2"></button>
+                                <button class="booking-seat" type="button" data-seat="B3"></button>
+                                <button class="booking-seat" type="button" data-seat="B4"></button>
+                                <button class="booking-seat" type="button" data-seat="B5"></button>
+                                <button class="booking-seat" type="button" data-seat="B6"></button>
+                                <button class="booking-seat" type="button" data-seat="B7"></button>
+                                <button class="booking-seat" type="button" data-seat="B8"></button>
+                                <button class="booking-seat" type="button" data-seat="B9"></button>
+                                <button class="booking-seat" type="button" data-seat="B10"></button>
+                                <button class="booking-seat" type="button" data-seat="B11"></button>
+                                <button class="booking-seat" type="button" data-seat="B12"></button>
+                            </div>
+                            <div class="booking-seat-row">
+                                <span class="booking-seat-row-label">C</span>
+                                <button class="booking-seat" type="button" data-seat="C1"></button>
+                                <button class="booking-seat" type="button" data-seat="C2"></button>
+                                <button class="booking-seat is-selected" type="button" data-seat="C3"></button>
+                                <button class="booking-seat" type="button" data-seat="C4"></button>
+                                <button class="booking-seat is-taken" type="button" disabled></button>
+                                <button class="booking-seat is-taken" type="button" disabled></button>
+                                <button class="booking-seat" type="button" data-seat="C7"></button>
+                                <button class="booking-seat" type="button" data-seat="C8"></button>
+                                <button class="booking-seat" type="button" data-seat="C9"></button>
+                                <button class="booking-seat" type="button" data-seat="C10"></button>
+                                <button class="booking-seat" type="button" data-seat="C11"></button>
+                                <button class="booking-seat" type="button" data-seat="C12"></button>
+                            </div>
+                            <div class="booking-seat-row">
+                                <span class="booking-seat-row-label">D</span>
+                                <button class="booking-seat" type="button" data-seat="D1"></button>
+                                <button class="booking-seat" type="button" data-seat="D2"></button>
+                                <button class="booking-seat is-selected" type="button" data-seat="D3"></button>
+                                <button class="booking-seat" type="button" data-seat="D4"></button>
+                                <button class="booking-seat" type="button" data-seat="D5"></button>
+                                <button class="booking-seat" type="button" data-seat="D6"></button>
+                                <button class="booking-seat is-taken" type="button" disabled></button>
+                                <button class="booking-seat is-taken" type="button" disabled></button>
+                                <button class="booking-seat" type="button" data-seat="D9"></button>
+                                <button class="booking-seat" type="button" data-seat="D10"></button>
+                                <button class="booking-seat" type="button" data-seat="D11"></button>
+                                <button class="booking-seat" type="button" data-seat="D12"></button>
+                            </div>
+                            <div class="booking-seat-row">
+                                <span class="booking-seat-row-label">E</span>
+                                <button class="booking-seat" type="button" data-seat="E1"></button>
+                                <button class="booking-seat" type="button" data-seat="E2"></button>
+                                <button class="booking-seat" type="button" data-seat="E3"></button>
+                                <button class="booking-seat is-taken" type="button" disabled></button>
+                                <button class="booking-seat" type="button" data-seat="E5"></button>
+                                <button class="booking-seat" type="button" data-seat="E6"></button>
+                                <button class="booking-seat" type="button" data-seat="E7"></button>
+                                <button class="booking-seat" type="button" data-seat="E8"></button>
+                                <button class="booking-seat" type="button" data-seat="E9"></button>
+                                <button class="booking-seat" type="button" data-seat="E10"></button>
+                                <button class="booking-seat" type="button" data-seat="E11"></button>
+                                <button class="booking-seat" type="button" data-seat="E12"></button>
+                            </div>
+                            <div class="booking-seat-row">
+                                <span class="booking-seat-row-label">F</span>
+                                <button class="booking-seat" type="button" data-seat="F1"></button>
+                                <button class="booking-seat" type="button" data-seat="F2"></button>
+                                <button class="booking-seat" type="button" data-seat="F3"></button>
+                                <button class="booking-seat" type="button" data-seat="F4"></button>
+                                <button class="booking-seat" type="button" data-seat="F5"></button>
+                                <button class="booking-seat" type="button" data-seat="F6"></button>
+                                <button class="booking-seat" type="button" data-seat="F7"></button>
+                                <button class="booking-seat" type="button" data-seat="F8"></button>
+                                <button class="booking-seat is-taken" type="button" disabled></button>
+                                <button class="booking-seat is-taken" type="button" disabled></button>
+                                <button class="booking-seat" type="button" data-seat="F11"></button>
+                                <button class="booking-seat" type="button" data-seat="F12"></button>
+                            </div>
+                            <div class="booking-seat-row">
+                                <span class="booking-seat-row-label">G</span>
+                                <button class="booking-seat" type="button" data-seat="G1"></button>
+                                <button class="booking-seat" type="button" data-seat="G2"></button>
+                                <button class="booking-seat" type="button" data-seat="G3"></button>
+                                <button class="booking-seat" type="button" data-seat="G4"></button>
+                                <button class="booking-seat" type="button" data-seat="G5"></button>
+                                <button class="booking-seat is-taken" type="button" disabled></button>
+                                <button class="booking-seat" type="button" data-seat="G7"></button>
+                                <button class="booking-seat" type="button" data-seat="G8"></button>
+                                <button class="booking-seat" type="button" data-seat="G9"></button>
+                                <button class="booking-seat" type="button" data-seat="G10"></button>
+                                <button class="booking-seat" type="button" data-seat="G11"></button>
+                                <button class="booking-seat" type="button" data-seat="G12"></button>
+                            </div>
+                            <div class="booking-seat-row">
+                                <span class="booking-seat-row-label">H</span>
+                                <button class="booking-seat" type="button" data-seat="H1"></button>
+                                <button class="booking-seat" type="button" data-seat="H2"></button>
+                                <button class="booking-seat" type="button" data-seat="H3"></button>
+                                <button class="booking-seat" type="button" data-seat="H4"></button>
+                                <button class="booking-seat" type="button" data-seat="H5"></button>
+                                <button class="booking-seat" type="button" data-seat="H6"></button>
+                                <button class="booking-seat" type="button" data-seat="H7"></button>
+                                <button class="booking-seat" type="button" data-seat="H8"></button>
+                                <button class="booking-seat" type="button" data-seat="H9"></button>
+                                <button class="booking-seat" type="button" data-seat="H10"></button>
+                                <button class="booking-seat" type="button" data-seat="H11"></button>
+                                <button class="booking-seat" type="button" data-seat="H12"></button>
+                            </div>
+                        </div>
+
+                        <div class="booking-seat-legend">
+                            <span class="booking-seat-legend-item"><span class="booking-seat-swatch"></span>Available</span>
+                            <span class="booking-seat-legend-item"><span class="booking-seat-swatch is-selected"></span>Selected</span>
+                            <span class="booking-seat-legend-item"><span class="booking-seat-swatch is-taken"></span>Taken</span>
+                        </div>
+
+                        <div class="booking-bottom-bar">
+                            <button class="booking-secondary-button" type="button" data-booking-prev>Back</button>
+                            <button class="booking-primary-button" type="button" data-booking-next>Continue</button>
+                        </div>
+                    </section>
+
+                    <section class="booking-panel" data-booking-panel="4" hidden>
+                        <h2 class="booking-section-title">Checkout</h2>
+
+                        <div class="booking-checkout-grid">
+                            <article class="booking-summary-card">
+                                <h3>Order Summary</h3>
+                                <div class="booking-summary-rows">
+                                    <div class="booking-summary-row"><span>Film:</span><span id="summary-film">Inception</span></div>
+                                    <div class="booking-summary-row"><span>Showtime:</span><span id="summary-time">17:00</span></div>
+                                    <div class="booking-summary-row"><span>Theater:</span><span id="summary-theater">Dolby Theater</span></div>
+                                    <div class="booking-summary-row"><span>Seats:</span><span id="summary-seats">C3, D3</span></div>
+                                    <div class="booking-summary-row"><span>Ticket Type:</span><span id="summary-tier">Standard</span></div>
+                                    <div class="booking-summary-divider"></div>
+                                    <div class="booking-summary-row"><span>Quantity:</span><span id="summary-quantity">2 tickets</span></div>
+                                    <div class="booking-summary-row booking-summary-total"><span>Total:</span><span id="summary-total">$24</span></div>
+                                </div>
+                            </article>
+
+                            <article class="booking-payment-card">
+                                <h3><svg class="icon"><use href="#i-credit-card"></use></svg>Payment Details</h3>
+                                <form class="booking-payment-form" id="booking-payment-form">
+                                    <div class="booking-field">
+                                        <label for="card-number">Card Number</label>
+                                        <input id="card-number" type="text" inputmode="numeric" placeholder="1234 5678 9012 3456" />
+                                    </div>
+                                    <div class="booking-field-row">
+                                        <div class="booking-field">
+                                            <label for="card-expiry">Expiry</label>
+                                            <input id="card-expiry" type="text" placeholder="MM/YY" />
+                                        </div>
+                                        <div class="booking-field">
+                                            <label for="card-cvv">CVV</label>
+                                            <input id="card-cvv" type="text" inputmode="numeric" placeholder="123" />
+                                        </div>
+                                    </div>
+                                    <div class="booking-field">
+                                        <label for="card-name">Cardholder Name</label>
+                                        <input id="card-name" type="text" placeholder="John Doe" />
+                                    </div>
+                                </form>
+                            </article>
+                        </div>
+
+                        <div class="booking-bottom-bar">
+                            <button class="booking-secondary-button" type="button" data-booking-prev>Back</button>
+                            <button class="booking-primary-button" type="submit" form="booking-payment-form">Complete</button>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </main>
+
+        <footer id="footer" class="site-footer footer-section">
+            <div class="footer-bg-word">CINEVERSE</div>
+            <div class="container footer-shell">
+                <div class="footer-top">
+                    <div class="footer-brand">
+                        <a class="brand" href="home.html">
+                            <svg class="icon icon-film"><use href="#i-film"></use></svg>
+                            <span class="brand-wordmark">CINEVERSE</span>
+                        </a>
+                        <p>
+                            The world's premier destination for extraordinary cinema. Where every
+                            story matters.
+                        </p>
+                        <div class="social-links">
+                            <a href="#" aria-label="Twitter"><svg class="icon"><use href="#i-twitter"></use></svg></a>
+                            <a href="#" aria-label="Instagram"><svg class="icon"><use href="#i-instagram"></use></svg></a>
+                            <a href="#" aria-label="YouTube"><svg class="icon"><use href="#i-youtube"></use></svg></a>
+                            <a href="#" aria-label="Email"><svg class="icon"><use href="#i-mail"></use></svg></a>
+                        </div>
+                    </div>
+
+                    <div class="footer-column">
+                        <h3>Explore</h3>
+                        <a href="films.html">New Releases</a>
+                        <a href="films.html">Top Rated</a>
+                        <a href="booking.html">Book Tickets</a>
+                        <a href="login.html">Member Access</a>
+                        <a href="admin.html">Admin Desk</a>
+                    </div>
+
+                    <div class="footer-column">
+                        <h3>Categories</h3>
+                        <a href="films.html">Action &amp; Epic</a>
+                        <a href="films.html">Drama &amp; Romance</a>
+                        <a href="films.html">Sci-Fi &amp; Fantasy</a>
+                        <a href="films.html">Horror &amp; Thriller</a>
+                        <a href="films.html">World Cinema</a>
+                    </div>
+
+                    <div class="footer-column">
+                        <h3>Company</h3>
+                        <a href="home.html#about">About Us</a>
+                        <a href="home.html#about">Our Critics</a>
+                        <a href="home.html#about">Press Kit</a>
+                        <a href="home.html#about">Partnerships</a>
+                        <a href="home.html#about">Contact</a>
+                    </div>
+                </div>
+
+                <div class="newsletter">
+                    <div>
+                        <h3>Stay in the Picture</h3>
+                        <p>Get weekly picks from our editors, delivered to your inbox.</p>
+                    </div>
+                    <form class="newsletter-form" id="newsletter-form">
+                        <input type="email" placeholder="your@email.com" aria-label="Email address" />
+                        <button class="cine-button cine-button-gold subscribe-button" type="submit">
+                            Subscribe
+                        </button>
+                    </form>
+                </div>
+
+                <div class="footer-bottom">
+                    <p>&copy; <span id="year"></span> Cineverse. All rights reserved. Crafted with passion for cinema.</p>
+                    <div class="footer-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Use</a>
+                        <a href="#">Cookie Settings</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script src="script.js"></script>
+    </body>
+</html>
