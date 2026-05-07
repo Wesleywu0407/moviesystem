@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}CINEVERSE Movie Detail{% endblock %}
+{% block body_class %}movie-detail-page{% endblock %}
+
+{% block content %}
+<main>
+            <!-- Detail Header -->
+            <section class="detail-page-head">
+                <div class="container detail-page-head-shell">
+                    <div>
+                        <a class="detail-back-link" href="{% url 'films' %}">
+                            <svg class="icon"><use href="#i-chevron-left"></use></svg>
+                            <span>Back to Films</span>
+                        </a>
+                        <p class="section-kicker detail-kicker">Now Screening</p>
+                        <h1 class="section-title">Echoes of <span>Eternity</span></h1>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Highlighted Film Detail Section -->
+            <section id="tickets" class="section spotlight-section">
+                <div class="container spotlight-shell">
+                    <div class="spotlight-poster">
+                        <img src="https://images.unsplash.com/photo-1739891251370-05b62a54697b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1200" alt="Echoes of Eternity poster" />
+                        <button class="spotlight-play" type="button" aria-label="Play trailer">
+                            <svg class="icon"><use href="#i-play"></use></svg>
+                        </button>
+                        <div class="spotlight-caption">
+                            <p class="spotlight-caption-kicker">A Cosmic Odyssey</p>
+                            <h3>Echoes of Eternity</h3>
+                        </div>
+                    </div>
+
+                    <div class="spotlight-copy">
+                        <div class="spotlight-rating-row">
+                            <div class="spotlight-rating">
+                                <svg class="icon"><use href="#i-star"></use></svg>
+                                <strong>9.2</strong>
+                                <span>/ 10</span>
+                            </div>
+                            <p class="spotlight-genre">Science Fiction &middot; Epic Drama</p>
+                        </div>
+
+                        <h2 class="spotlight-title">Echoes of Eternity</h2>
+                        <p class="spotlight-director">
+                            <svg class="icon"><use href="#i-film"></use></svg>
+                            <span>Directed by <strong>Elena Vasquez</strong></span>
+                        </p>
+
+                        <p class="spotlight-description">
+                            In the year 2157, when humanity discovers that the fabric of time itself
+                            is unraveling, one astronaut must travel beyond the edge of the known
+                            universe to confront the source of the collapse and the ghosts of her own
+                            past.
+                        </p>
+
+                        <div class="spotlight-group">
+                            <p class="spotlight-group-label">
+                                <svg class="icon"><use href="#i-camera"></use></svg>
+                                <span>Cast</span>
+                            </p>
+                            <div class="spotlight-chips">
+                                <span class="spotlight-chip">Mariana Solis</span>
+                                <span class="spotlight-chip">David Osei</span>
+                                <span class="spotlight-chip">Yuki Tanaka</span>
+                            </div>
+                        </div>
+
+                        <div class="spotlight-group">
+                            <p class="spotlight-group-label">
+                                <svg class="icon"><use href="#i-star"></use></svg>
+                                <span>Awards</span>
+                            </p>
+                            <div class="spotlight-chips spotlight-chips-gold">
+                                <span class="spotlight-chip">Best Picture</span>
+                                <span class="spotlight-chip">Best Director</span>
+                                <span class="spotlight-chip">Best Visual Effects</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-actions">
+                            <a class="cine-button cine-button-gold spotlight-button" href="{% url 'booking' %}">
+                                <svg class="icon"><use href="#i-play"></use></svg>
+                                <span>Watch the Film</span>
+                            </a>
+                            <a class="cine-button cine-button-ghost" href="{% url 'films' %}">Back to Collection</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+{% endblock %}

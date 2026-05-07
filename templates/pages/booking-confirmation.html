@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Confirmed | CINEVERSE{% endblock %}
+{% block body_class %}booking-page{% endblock %}
+
+{% block content %}
+<main>
+    <section class="booking-hero">
+        <div class="container booking-hero-shell">
+            <h1 class="booking-hero-title">Booking Confirmed</h1>
+            <p class="booking-hero-copy">Your seats are reserved. See details below.</p>
+        </div>
+    </section>
+
+    <section class="booking-flow-section">
+        <div class="container">
+            <section class="booking-panel">
+                <h2 class="booking-section-title">Confirmation</h2>
+                <div class="booking-summary-rows">
+                    <div class="booking-summary-row"><span>Booking Ref:</span><span>{{ booking.booking_ref }}</span></div>
+                    <div class="booking-summary-row"><span>Film:</span><span>{{ booking.session.movie.title }}</span></div>
+                    <div class="booking-summary-row"><span>Theatre:</span><span>{{ booking.session.theatre.cinema.name }} — {{ booking.session.theatre.name }}</span></div>
+                    <div class="booking-summary-row"><span>Start:</span><span>{{ booking.session.start_time|date:"D, d M Y · H:i" }}</span></div>
+                    <div class="booking-summary-row"><span>Quantity:</span><span>{{ booking.quantity }}</span></div>
+                    <div class="booking-summary-row"><span>Unit Price:</span><span>${{ booking.unit_price }}</span></div>
+                    <div class="booking-summary-row booking-summary-total"><span>Total Paid:</span><span>${{ booking.total_price }}</span></div>
+                </div>
+
+                <div class="booking-bottom-bar booking-bottom-bar-end">
+                    <a href="{% url 'booking' %}" class="booking-primary-button" style="text-decoration:none;">Book Another Session</a>
+                </div>
+            </section>
+        </div>
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}CINEVERSE Genres{% endblock %}
+{% block body_class %}{% endblock %}
+
+{% block content %}
+<main>
+            <section class="detail-page-head">
+                <div class="container detail-page-head-shell">
+                    <div>
+                        <p class="section-kicker detail-kicker">Browse By</p>
+                        <h1 class="section-title">Film <span>Genres</span></h1>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section genres-section">
+                <div class="container">
+                    <div class="genre-grid">
+                        <article class="genre-card genre-card-red">
+                            <span class="genre-icon"><svg class="icon"><use href="#i-zap"></use></svg></span>
+                            <h3>Action</h3>
+                            <p>248 films</p>
+                        </article>
+                        <article class="genre-card genre-card-pink">
+                            <span class="genre-icon"><svg class="icon"><use href="#i-heart"></use></svg></span>
+                            <h3>Romance</h3>
+                            <p>183 films</p>
+                        </article>
+                        <article class="genre-card genre-card-green">
+                            <span class="genre-icon"><svg class="icon"><use href="#i-ghost"></use></svg></span>
+                            <h3>Horror</h3>
+                            <p>156 films</p>
+                        </article>
+                        <article class="genre-card genre-card-blue">
+                            <span class="genre-icon"><svg class="icon"><use href="#i-rocket"></use></svg></span>
+                            <h3>Sci-Fi</h3>
+                            <p>209 films</p>
+                        </article>
+                        <article class="genre-card genre-card-gold">
+                            <span class="genre-icon"><svg class="icon"><use href="#i-sword"></use></svg></span>
+                            <h3>Epic</h3>
+                            <p>97 films</p>
+                        </article>
+                        <article class="genre-card genre-card-violet">
+                            <span class="genre-icon"><svg class="icon"><use href="#i-eye"></use></svg></span>
+                            <h3>Thriller</h3>
+                            <p>172 films</p>
+                        </article>
+                    </div>
+
+                    <div class="genre-stats">
+                        <article class="genre-stat"><strong>1,200+</strong><span>Films in Collection</span></article>
+                        <article class="genre-stat"><strong>87</strong><span>Award Winners</span></article>
+                        <article class="genre-stat"><strong>42</strong><span>Countries</span></article>
+                        <article class="genre-stat"><strong>6</strong><span>Decades of Cinema</span></article>
+                    </div>
+                </div>
+            </section>
+        </main>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}CINEVERSE Register{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<main>
+            <section class="auth-section">
+                <div class="container auth-shell">
+                    <div class="auth-copy">
+                        <p class="section-kicker">New Membership</p>
+                        <h1 class="section-title">Join the <span>Archive</span></h1>
+                        <p>
+                            Create your Cineverse account to unlock member pricing, saved seats,
+                            priority booking access, and your own curated list of unforgettable films.
+                        </p>
+                        <div class="auth-notes">
+                            <span class="auth-note">Priority Access</span>
+                            <span class="auth-note">Saved Favorites</span>
+                            <span class="auth-note">Member Pricing</span>
+                        </div>
+                    </div>
+
+                    <div class="auth-panel">
+                        <div class="auth-switch">
+                            <a href="{% url 'login' %}">Login</a>
+                            <a class="is-active" href="{% url 'register' %}">Register</a>
+                        </div>
+                        <h2>Create Account</h2>
+                        <p>Build your profile and start booking in seconds.</p>
+
+                        <form class="auth-form" id="register-form" method="post">
+                            {% csrf_token %}
+                            {% if form.errors %}
+                                <div class="auth-field">
+                                    {% for field, errors in form.errors.items %}
+                                        {% for error in errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="auth-form-row">
+                                <div class="auth-field">
+                                    <label for="register-first">First Name</label>
+                                    <input id="register-first" name="first_name" type="text" placeholder="John" value="{{ form.data.first_name|default:'' }}" required />
+                                </div>
+                                <div class="auth-field">
+                                    <label for="register-last">Last Name</label>
+                                    <input id="register-last" name="last_name" type="text" placeholder="Doe" value="{{ form.data.last_name|default:'' }}" required />
+                                </div>
+                            </div>
+                            <div class="auth-field">
+                                <label for="register-email">Email</label>
+                                <input id="register-email" name="email" type="email" placeholder="you@example.com" value="{{ form.data.email|default:'' }}" required />
+                            </div>
+                            <div class="auth-form-row">
+                                <div class="auth-field">
+                                    <label for="register-password">Password</label>
+                                    <input id="register-password" name="password1" type="password" placeholder="Create password" required />
+                                </div>
+                                <div class="auth-field">
+                                    <label for="register-confirm">Confirm Password</label>
+                                    <input id="register-confirm" name="password2" type="password" placeholder="Repeat password" required />
+                                </div>
+                            </div>
+                            <div class="auth-meta">
+                                <label class="auth-checkbox">
+                                    <input type="checkbox" />
+                                    <span>I agree to the terms and privacy policy</span>
+                                </label>
+                            </div>
+                            <button class="cine-button cine-button-gold auth-submit" type="submit">Create Account</button>
+                        </form>
+
+                        <p class="auth-footer-note">
+                            Already a member? <a href="{% url 'login' %}">Sign in here</a>
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+{% endblock %}

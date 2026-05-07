@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}CINEVERSE Admin{% endblock %}
+{% block body_class %}admin-page{% endblock %}
+
+{% block content %}
+<main>
+            <section class="admin-section">
+                <div class="container">
+                    <div class="admin-head">
+                        <div>
+                            <h1 class="section-title">Admin Dashboard</h1>
+                        </div>
+                    </div>
+                    <p class="admin-subtitle">Manage Films, Showtimes &amp; Theaters</p>
+
+                    <div class="admin-tabs" role="tablist" aria-label="Admin sections">
+                        <button class="admin-tab is-active" type="button" role="tab" aria-selected="true" data-admin-tab="films">
+                            <svg class="icon"><use href="#i-film"></use></svg>
+                            <span>Films</span>
+                        </button>
+                        <button class="admin-tab" type="button" role="tab" aria-selected="false" data-admin-tab="showtimes">
+                            <svg class="icon"><use href="#i-calendar"></use></svg>
+                            <span>Showtimes</span>
+                        </button>
+                        <button class="admin-tab" type="button" role="tab" aria-selected="false" data-admin-tab="theaters">
+                            <svg class="icon"><use href="#i-map-pin"></use></svg>
+                            <span>Theaters</span>
+                        </button>
+                    </div>
+
+                    <div class="admin-toolbar">
+                        <label class="admin-search">
+                            <svg class="icon"><use href="#i-search"></use></svg>
+                            <input type="search" placeholder="Search..." aria-label="Search admin records" />
+                        </label>
+                        <button class="cine-button cine-button-gold admin-add-button" type="button">+ Add New</button>
+                    </div>
+
+                    <div class="admin-data-card">
+                        <div class="admin-table-panel" data-admin-panel="films">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Genre</th>
+                                        <th>Duration</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Interstellar</td>
+                                        <td>Sci-Fi</td>
+                                        <td>169 min</td>
+                                        <td><span class="status-badge is-now-playing">Now Playing</span></td>
+                                        <td>
+                                            <div class="admin-actions-cell">
+                                                <button class="admin-icon-button" type="button" aria-label="Edit Interstellar"><svg class="icon"><use href="#i-pencil"></use></svg></button>
+                                                <button class="admin-icon-button" type="button" aria-label="Delete Interstellar"><svg class="icon"><use href="#i-trash"></use></svg></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>The Godfather</td>
+                                        <td>Crime</td>
+                                        <td>175 min</td>
+                                        <td><span class="status-badge is-classic">Classic</span></td>
+                                        <td>
+                                            <div class="admin-actions-cell">
+                                                <button class="admin-icon-button" type="button" aria-label="Edit The Godfather"><svg class="icon"><use href="#i-pencil"></use></svg></button>
+                                                <button class="admin-icon-button" type="button" aria-label="Delete The Godfather"><svg class="icon"><use href="#i-trash"></use></svg></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>The Dark Knight</td>
+                                        <td>Action</td>
+                                        <td>152 min</td>
+                                        <td><span class="status-badge is-now-playing">Now Playing</span></td>
+                                        <td>
+                                            <div class="admin-actions-cell">
+                                                <button class="admin-icon-button" type="button" aria-label="Edit The Dark Knight"><svg class="icon"><use href="#i-pencil"></use></svg></button>
+                                                <button class="admin-icon-button" type="button" aria-label="Delete The Dark Knight"><svg class="icon"><use href="#i-trash"></use></svg></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="admin-table-panel" data-admin-panel="showtimes" hidden>
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Film</th>
+                                        <th>Theater</th>
+                                        <th>Time</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Interstellar</td>
+                                        <td>IMAX Theater</td>
+                                        <td class="admin-time-cell"><svg class="icon"><use href="#i-calendar"></use></svg>14:30</td>
+                                        <td>2026-04-15</td>
+                                        <td>
+                                            <div class="admin-actions-cell">
+                                                <button class="admin-icon-button" type="button" aria-label="Edit Interstellar showtime"><svg class="icon"><use href="#i-pencil"></use></svg></button>
+                                                <button class="admin-icon-button" type="button" aria-label="Delete Interstellar showtime"><svg class="icon"><use href="#i-trash"></use></svg></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>The Godfather</td>
+                                        <td>Classic Hall</td>
+                                        <td class="admin-time-cell"><svg class="icon"><use href="#i-calendar"></use></svg>19:00</td>
+                                        <td>2026-04-15</td>
+                                        <td>
+                                            <div class="admin-actions-cell">
+                                                <button class="admin-icon-button" type="button" aria-label="Edit The Godfather showtime"><svg class="icon"><use href="#i-pencil"></use></svg></button>
+                                                <button class="admin-icon-button" type="button" aria-label="Delete The Godfather showtime"><svg class="icon"><use href="#i-trash"></use></svg></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>The Dark Knight</td>
+                                        <td>Dolby Theater</td>
+                                        <td class="admin-time-cell"><svg class="icon"><use href="#i-calendar"></use></svg>21:00</td>
+                                        <td>2026-04-15</td>
+                                        <td>
+                                            <div class="admin-actions-cell">
+                                                <button class="admin-icon-button" type="button" aria-label="Edit The Dark Knight showtime"><svg class="icon"><use href="#i-pencil"></use></svg></button>
+                                                <button class="admin-icon-button" type="button" aria-label="Delete The Dark Knight showtime"><svg class="icon"><use href="#i-trash"></use></svg></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="admin-table-panel" data-admin-panel="theaters" hidden>
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Theater Name</th>
+                                        <th>Capacity</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>IMAX Theater</td>
+                                        <td>300 seats</td>
+                                        <td>IMAX</td>
+                                        <td><span class="status-badge is-operating">Operating</span></td>
+                                        <td>
+                                            <div class="admin-actions-cell">
+                                                <button class="admin-icon-button" type="button" aria-label="Edit IMAX Theater"><svg class="icon"><use href="#i-pencil"></use></svg></button>
+                                                <button class="admin-icon-button" type="button" aria-label="Delete IMAX Theater"><svg class="icon"><use href="#i-trash"></use></svg></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Classic Hall</td>
+                                        <td>150 seats</td>
+                                        <td>Standard</td>
+                                        <td><span class="status-badge is-operating">Operating</span></td>
+                                        <td>
+                                            <div class="admin-actions-cell">
+                                                <button class="admin-icon-button" type="button" aria-label="Edit Classic Hall"><svg class="icon"><use href="#i-pencil"></use></svg></button>
+                                                <button class="admin-icon-button" type="button" aria-label="Delete Classic Hall"><svg class="icon"><use href="#i-trash"></use></svg></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dolby Theater</td>
+                                        <td>200 seats</td>
+                                        <td>Dolby Atmos</td>
+                                        <td><span class="status-badge is-maintenance">Maintenance</span></td>
+                                        <td>
+                                            <div class="admin-actions-cell">
+                                                <button class="admin-icon-button" type="button" aria-label="Edit Dolby Theater"><svg class="icon"><use href="#i-pencil"></use></svg></button>
+                                                <button class="admin-icon-button" type="button" aria-label="Delete Dolby Theater"><svg class="icon"><use href="#i-trash"></use></svg></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+{% endblock %}

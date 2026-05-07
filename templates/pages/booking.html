@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}CINEVERSE Booking{% endblock %}
+{% block body_class %}booking-page{% endblock %}
+
+{% block content %}
+<main>
+    <section class="booking-hero">
+        <div class="container booking-hero-shell">
+            <h1 class="booking-hero-title">Book Your Seat</h1>
+            <p class="booking-hero-copy">Select a live session and reserve your tickets instantly.</p>
+        </div>
+    </section>
+
+    <section class="booking-flow-section">
+        <div class="container">
+            {% if messages %}
+                {% for message in messages %}
+                    <section class="booking-panel" style="margin-bottom: 1rem;">
+                        <p class="booking-section-title" style="margin-bottom:0;">{{ message }}</p>
+                    </section>
+                {% endfor %}
+            {% endif %}
+
+            <section class="booking-panel">
+                <h2 class="booking-section-title">Available Sessions</h2>
+
+                {% if sessions %}
+                    <div class="booking-showtime-grid">
+                        {% for session in sessions %}
+                            <article class="booking-showtime-card" style="cursor:default;">
+                                <span class="booking-showtime-time">
+                                    <svg class="icon"><use href="#i-clock"></use></svg>
+                                    <span>{{ session.start_time|date:"D, d M Y · H:i" }}</span>
+                                </span>
+                                <span class="booking-showtime-meta" style="display:block;">
+                                    <span><strong>{{ session.movie.title }}</strong></span>
+                                    <span>{{ session.theatre.cinema.name }} — {{ session.theatre.name }}</span>
+                                    <span>Price: ${{ session.price }}</span>
+                                    <span>Seats Left: {{ session.seats_available }}</span>
+                                </span>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="booking-hero-copy">No sessions are currently available. Please check back soon.</p>
+                {% endif %}
+            </section>
+
+            <section class="booking-panel">
+                <h2 class="booking-section-title">Create Booking</h2>
+                <form method="post" action="{% url 'booking' %}" class="booking-payment-form">
+                    {% csrf_token %}
+
+                    <div class="booking-field">
+                        <label for="session_id">Choose Session</label>
+                        <select name="session_id" id="session_id" required style="width:100%; padding:0.85rem 1rem; background:rgba(255,255,255,0.05); border:1px solid rgba(212,175,55,0.3); color:#f5f1e7; border-radius:8px; font-size:1rem;">
+                            <option value="">Select a session</option>
+                            {% for session in sessions %}
+                            <option value="{{ session.id }}">
+                                {{ session.movie.title }} | {{ session.theatre.name }} | {{ session.start_time|date:"d M Y H:i" }} | ${{ session.unit_price }} | {{ session.seats_available }} seats
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="booking-field">
+                        <label for="quantity">Quantity</label>
+                        <input id="quantity" name="quantity" type="number" min="1" value="1" required />
+                    </div>
+
+                    <div class="booking-bottom-bar booking-bottom-bar-end">
+                        <button class="booking-primary-button" type="submit">Confirm Booking</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </section>
+</main>
+{% endblock %}

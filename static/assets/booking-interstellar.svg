@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1320" role="img" aria-labelledby="title desc">
+  <title id="title">Interstellar inspired placeholder poster</title>
+  <desc id="desc">Purple twilight sky with stars and a shooting streak above a dark mountain horizon.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#241040"/>
+      <stop offset="52%" stop-color="#5a2e78"/>
+      <stop offset="82%" stop-color="#c56e89"/>
+      <stop offset="100%" stop-color="#f7b280"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="900" height="1320" fill="url(#sky)"/>
+  <g fill="#f5e8ff" opacity=".6">
+    <circle cx="70" cy="80" r="2"/>
+    <circle cx="118" cy="112" r="1.7"/>
+    <circle cx="170" cy="88" r="1.8"/>
+    <circle cx="226" cy="132" r="1.5"/>
+    <circle cx="288" cy="96" r="2"/>
+    <circle cx="340" cy="76" r="1.4"/>
+    <circle cx="402" cy="104" r="2"/>
+    <circle cx="460" cy="88" r="1.6"/>
+    <circle cx="518" cy="118" r="1.8"/>
+    <circle cx="582" cy="92" r="2"/>
+    <circle cx="644" cy="120" r="1.7"/>
+    <circle cx="700" cy="82" r="1.8"/>
+    <circle cx="760" cy="114" r="1.9"/>
+    <circle cx="822" cy="100" r="1.5"/>
+    <circle cx="132" cy="178" r="1.4"/>
+    <circle cx="212" cy="198" r="1.7"/>
+    <circle cx="298" cy="182" r="1.3"/>
+    <circle cx="366" cy="216" r="1.6"/>
+    <circle cx="442" cy="174" r="1.5"/>
+    <circle cx="512" cy="210" r="1.7"/>
+    <circle cx="602" cy="194" r="1.5"/>
+    <circle cx="682" cy="208" r="1.6"/>
+    <circle cx="748" cy="172" r="1.5"/>
+    <circle cx="816" cy="214" r="1.4"/>
+    <circle cx="80" cy="252" r="1.4"/>
+    <circle cx="150" cy="292" r="1.7"/>
+    <circle cx="232" cy="260" r="1.5"/>
+    <circle cx="308" cy="304" r="1.6"/>
+    <circle cx="388" cy="248" r="1.4"/>
+    <circle cx="470" cy="296" r="1.6"/>
+    <circle cx="550" cy="266" r="1.5"/>
+    <circle cx="626" cy="306" r="1.7"/>
+    <circle cx="704" cy="258" r="1.5"/>
+    <circle cx="790" cy="286" r="1.4"/>
+  </g>
+  <path d="M430 640 L625 685" stroke="#f6a9d7" stroke-width="6" stroke-linecap="round" opacity=".9" filter="url(#glow)"/>
+  <g fill="#120a16">
+    <path d="M0 1080 L90 1018 L160 1048 L248 960 L350 1012 L438 936 L520 1008 L612 952 L720 1024 L804 968 L900 1024 L900 1320 L0 1320 Z"/>
+    <path d="M0 1140 L88 1108 L168 1128 L258 1072 L344 1118 L446 1084 L530 1138 L632 1098 L714 1142 L804 1104 L900 1144 L900 1320 L0 1320 Z" fill="#1a0f1c"/>
+  </g>
+</svg>

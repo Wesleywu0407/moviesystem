@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}CINEVERSE Films{% endblock %}
+{% block body_class %}films-page{% endblock %}
+
+{% block content %}
+<main>
+            <!-- Films Hero -->
+            <section class="films-hero">
+                <div class="container films-hero-shell">
+                    <div class="films-hero-copy">
+                        <p class="section-kicker">The Collection</p>
+                        <h1 class="section-title">Featured <span>Films</span></h1>
+                        <p class="films-lead">
+                            Explore a curated grid of Cineverse titles, from award-winning science
+                            fiction to intimate romances and shadow-soaked thrillers. Every card
+                            follows the same premium editorial system from the homepage.
+                        </p>
+                    </div>
+
+                    <aside class="films-hero-panel" aria-label="Collection notes">
+                        <h3>Curated Paths</h3>
+                        <p>
+                            Festival selections, restored classics, and now-screening originals are
+                            arranged in a four-column cinematic archive for quick browsing.
+                        </p>
+                        <div class="films-hero-tags">
+                            <span class="films-tag">Now Screening</span>
+                            <span class="films-tag">Festival Picks</span>
+                            <span class="films-tag">Award Winners</span>
+                            <span class="films-tag">Late Night</span>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+
+            <!-- Film Grid -->
+            <section class="film-library-section">
+                <div class="container">
+                    <div class="film-library-grid">
+                        {% for movie in movies %}
+                            <article class="movie-card">
+                                <a class="movie-card-link" href="{% url 'booking' %}">
+                                    {% if movie.poster_url %}
+                                        <div class="movie-poster" style="--poster-art: url('{{ movie.poster_url }}') center/cover no-repeat;">
+                                            <span class="movie-card-badge">{{ movie.genre }}</span>
+                                            <span class="movie-card-year">{{ movie.release_date|date:"Y" }}</span>
+                                            <span class="movie-card-cta">
+                                                <svg class="icon"><use href="#i-play"></use></svg>
+                                                <span>Book Tickets</span>
+                                            </span>
+                                        </div>
+                                    {% else %}
+                                        <div class="movie-poster" style="--poster-art: linear-gradient(160deg, #151515 0%, #070707 100%);">
+                                            <span class="movie-card-badge">{{ movie.genre }}</span>
+                                            <span class="movie-card-year">{{ movie.release_date|date:"Y" }}</span>
+                                            <span class="movie-card-cta">
+                                                <svg class="icon"><use href="#i-play"></use></svg>
+                                                <span>Book Tickets</span>
+                                            </span>
+                                        </div>
+                                    {% endif %}
+                                    <div class="movie-card-body">
+                                        <div class="movie-card-genres">
+                                            <span class="movie-genre-pill">{{ movie.genre }}</span>
+                                            {% if movie.is_featured %}
+                                                <span class="movie-genre-pill">Featured</span>
+                                            {% endif %}
+                                        </div>
+                                        <h3>{{ movie.title }}</h3>
+                                        <p class="movie-card-director">Rating: {{ movie.rating }}</p>
+                                        <p class="movie-card-summary">{{ movie.description|truncatechars:140 }}</p>
+                                        <div class="movie-card-meta">
+                                            <span class="movie-meta-item">
+                                                <svg class="icon"><use href="#i-star"></use></svg>
+                                                <strong>{{ movie.rating }}</strong>
+                                            </span>
+                                            <span class="movie-meta-item">
+                                                <svg class="icon"><use href="#i-clock"></use></svg>
+                                                <span>{{ movie.duration_mins }} mins</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </article>
+                        {% empty %}
+                            <article class="movie-card">
+                                <div class="movie-card-body">
+                                    <h3>No Featured Films Yet</h3>
+                                    <p class="movie-card-summary">
+                                        Add movies in Django admin and mark them as featured to display them here.
+                                    </p>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </main>
+{% endblock %}

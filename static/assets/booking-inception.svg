@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1320" role="img" aria-labelledby="title desc">
+  <title id="title">Inception inspired placeholder poster</title>
+  <desc id="desc">A vintage projector throws a beam through smoky darkness in a cinematic room.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0b1317"/>
+      <stop offset="55%" stop-color="#16120f"/>
+      <stop offset="100%" stop-color="#2d2117"/>
+    </linearGradient>
+    <radialGradient id="smoke" cx="70%" cy="40%" r="45%">
+      <stop offset="0%" stop-color="rgba(255,244,222,.95)"/>
+      <stop offset="35%" stop-color="rgba(228,210,182,.42)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="1320" fill="url(#bg)"/>
+  <rect x="0" y="0" width="900" height="1320" fill="#040505" opacity=".2"/>
+  <rect x="74" y="720" width="450" height="540" rx="8" fill="#4c341e"/>
+  <rect x="92" y="756" width="418" height="80" fill="#7b5633"/>
+  <rect x="250" y="404" width="240" height="470" rx="26" fill="#c3b28d"/>
+  <rect x="282" y="438" width="178" height="66" rx="14" fill="#53514b"/>
+  <rect x="294" y="534" width="150" height="212" rx="22" fill="#212627"/>
+  <circle cx="352" cy="632" r="70" fill="#f0e5ca"/>
+  <circle cx="352" cy="632" r="48" fill="#141516"/>
+  <rect x="304" y="838" width="128" height="160" rx="18" fill="#e0d1b1"/>
+  <rect x="190" y="590" width="70" height="366" rx="22" fill="#101314"/>
+  <rect x="154" y="520" width="138" height="110" rx="28" fill="#181d20"/>
+  <rect x="156" y="540" width="40" height="28" rx="6" fill="#bbd1c5"/>
+  <circle cx="216" cy="556" r="7" fill="#d65442"/>
+  <circle cx="240" cy="556" r="7" fill="#91d690"/>
+  <circle cx="264" cy="556" r="7" fill="#f0c356"/>
+  <path d="M420 600 C560 540 676 566 850 710 L850 956 C706 810 564 760 430 778 Z" fill="url(#smoke)" opacity=".88"/>
+  <ellipse cx="638" cy="690" rx="148" ry="88" fill="#f5edd6" opacity=".22"/>
+  <ellipse cx="666" cy="700" rx="104" ry="56" fill="#f8f1de" opacity=".16"/>
+  <rect x="0" y="0" width="900" height="1320" fill="url(#smoke)" opacity=".18"/>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1320" role="img" aria-labelledby="title desc">
+  <title id="title">Dark Knight inspired placeholder poster</title>
+  <desc id="desc">A dark caped vigilante silhouette stands in a moody industrial space with cool highlights.</desc>
+  <defs>
+    <linearGradient id="night" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0a1322"/>
+      <stop offset="45%" stop-color="#0d0f1a"/>
+      <stop offset="100%" stop-color="#1b1a1c"/>
+    </linearGradient>
+    <linearGradient id="trim" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%" stop-color="#8895c1"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1320" fill="url(#night)"/>
+  <path d="M0 150 L900 0 L900 240 L0 360 Z" fill="#111b2a" opacity=".62"/>
+  <path d="M0 1040 L900 850 L900 1080 L0 1260 Z" fill="#0d1320" opacity=".45"/>
+  <path d="M760 0 L900 0 L900 1320 L746 1320 Z" fill="#121824" opacity=".42"/>
+  <path d="M46 0 L96 0 L0 1320 L0 1180 Z" fill="#1d2c42" opacity=".55"/>
+  <path d="M98 336 L818 112 L842 176 L126 408 Z" fill="url(#trim)" opacity=".44"/>
+  <path d="M106 1164 L864 964 L886 1018 L122 1238 Z" fill="url(#trim)" opacity=".32"/>
+  <g transform="translate(182 150)">
+    <path d="M364 92 C406 92 434 132 430 184 L418 318 C414 394 440 520 480 844 C488 910 480 986 448 1092 L220 1092 C160 942 158 870 180 758 C214 592 224 482 206 352 C188 226 220 142 282 108 Z" fill="#0a0d16"/>
+    <path d="M310 110 C346 76 392 74 426 102 L450 166 L416 188 L396 158 L368 142 L332 142 L302 158 L274 196 L248 176 L270 130 Z" fill="#0c1018"/>
+    <path d="M274 202 C324 172 388 168 438 202 L462 362 C432 388 398 398 356 398 C312 398 274 384 246 356 Z" fill="#111827"/>
+    <path d="M242 380 C304 434 400 438 468 382 L514 744 C484 742 458 736 428 720 L404 812 L344 812 L320 722 C294 734 266 740 220 744 Z" fill="#0d1320"/>
+    <path d="M334 822 L416 822 L434 942 L316 942 Z" fill="#0b0f17"/>
+    <path d="M282 952 L438 952 L474 1092 L260 1092 Z" fill="#0a0d14"/>
+    <path d="M224 340 C148 442 120 552 96 784 C118 782 140 774 164 756 L198 814 C164 902 148 994 166 1092 L40 1092 C26 986 38 872 74 764 C92 710 96 654 88 586 C80 520 120 420 176 324 Z" fill="#070a12"/>
+    <path d="M484 340 C560 442 588 552 612 784 C590 782 568 774 544 756 L510 814 C544 902 560 994 542 1092 L668 1092 C682 986 670 872 634 764 C616 710 612 654 620 586 C628 520 588 420 532 324 Z" fill="#070a12"/>
+    <path d="M320 574 L360 558 L402 574 L394 638 L360 650 L326 638 Z" fill="#a07a27"/>
+    <rect x="258" y="646" width="202" height="62" rx="22" fill="#c3a24a"/>
+    <rect x="278" y="662" width="28" height="34" rx="10" fill="#7f631b"/>
+    <rect x="322" y="662" width="28" height="34" rx="10" fill="#7f631b"/>
+    <rect x="366" y="662" width="28" height="34" rx="10" fill="#7f631b"/>
+    <rect x="410" y="662" width="28" height="34" rx="10" fill="#7f631b"/>
+  </g>
+</svg>
