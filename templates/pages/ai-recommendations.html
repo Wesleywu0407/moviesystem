@@ -5,190 +5,84 @@
 
 {% block content %}
 <main>
-            <section class="ai-recommendations-section">
-                <div class="container">
-                    <header class="ai-header">
-                        <h1 class="ai-title">
-                            <svg class="icon"><use href="#i-sparkle"></use></svg>
-                            <span>AI Recommendations</span>
-                        </h1>
-                        <p class="ai-subtitle">
-                            Personalized film selections based on your viewing history, ratings,
-                            and preferences
-                        </p>
-                    </header>
+    <section class="ai-recommendations-section">
+        <div class="container">
+            <header class="ai-header">
+                <h1 class="ai-title">
+                    <svg class="icon"><use href="#i-sparkle"></use></svg>
+                    <span>AI Recommendations</span>
+                </h1>
+                <p class="ai-subtitle">
+                    Personalized picks generated from your booking history and CINEVERSE catalog.
+                </p>
+            </header>
 
-                    <div class="ai-stats" aria-label="AI recommendation stats">
-                        <article class="ai-stat">
-                            <svg class="icon"><use href="#i-trend"></use></svg>
-                            <strong>89%</strong>
-                            <span>Accuracy</span>
-                        </article>
-                        <article class="ai-stat">
-                            <svg class="icon"><use href="#i-star"></use></svg>
-                            <strong>1,247</strong>
-                            <span>Films Analyzed</span>
-                        </article>
-                        <article class="ai-stat">
-                            <svg class="icon"><use href="#i-sparkle"></use></svg>
-                            <strong>High</strong>
-                            <span>Personalization</span>
-                        </article>
-                    </div>
+            <div class="ai-stats" aria-label="AI recommendation stats">
+                <article class="ai-stat">
+                    <svg class="icon"><use href="#i-trend"></use></svg>
+                    <strong>{{ recommendations|length }}</strong>
+                    <span>Recommendations</span>
+                </article>
+                <article class="ai-stat">
+                    <svg class="icon"><use href="#i-film"></use></svg>
+                    <strong>{{ booked_titles|length }}</strong>
+                    <span>Booked Films</span>
+                </article>
+                <article class="ai-stat">
+                    <svg class="icon"><use href="#i-sparkle"></use></svg>
+                    <strong>{% if ai_used %}Claude AI{% else %}Smart Fallback{% endif %}</strong>
+                    <span>Engine</span>
+                </article>
+            </div>
 
-                    <div class="ai-grid">
-                        <article class="ai-card">
-                            <img class="ai-card-poster" src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=600&fit=crop" alt="Interstellar recommendation poster" />
-                            <div class="ai-card-content">
-                                <p class="ai-match">
-                                    <svg class="icon"><use href="#i-sparkle"></use></svg>
-                                    <span>92% Match</span>
-                                </p>
-                                <h2>Interstellar</h2>
-                                <div class="ai-meta">
-                                    <span class="ai-meta-item">
-                                        <svg class="icon"><use href="#i-star"></use></svg>
-                                        <strong>8.6</strong>
-                                    </span>
-                                    <span class="ai-meta-item">
-                                        <svg class="icon"><use href="#i-clock"></use></svg>
-                                        <span>169 min</span>
-                                    </span>
-                                </div>
-                                <div class="ai-tags">
-                                    <span>Sci-Fi</span>
-                                    <span>Adventure</span>
-                                    <span>Drama</span>
-                                </div>
-                                <p class="ai-quote">"Based on your love for 2001: A Space Odyssey and Blade Runner"</p>
-                                <div class="ai-card-actions">
-                                    <button class="ai-feedback" type="button" data-ai-feedback="like" aria-label="Like Interstellar">
-                                        <svg class="icon"><use href="#i-thumbs-up"></use></svg>
-                                    </button>
-                                    <button class="ai-feedback" type="button" data-ai-feedback="dislike" aria-label="Dislike Interstellar">
-                                        <svg class="icon"><use href="#i-thumbs-down"></use></svg>
-                                    </button>
-                                    <a class="cine-button cine-button-gold" href="{% url 'movie_detail' %}">View Details</a>
-                                </div>
+            {% if top_genres %}
+                <p class="ai-subtitle" style="margin-bottom: 1.25rem;">Top Genres: {{ top_genres|join:", " }}</p>
+            {% endif %}
+
+            <div class="ai-grid">
+                {% for rec in recommendations %}
+                    <article class="ai-card">
+                        {% if rec.movie.poster_url %}
+                            <img class="ai-card-poster" src="{{ rec.movie.poster_url }}" alt="{{ rec.movie.title }} recommendation poster" />
+                        {% else %}
+                            <div class="ai-card-poster" style="background:linear-gradient(160deg,#161616 0%,#080808 100%);"></div>
+                        {% endif %}
+                        <div class="ai-card-content">
+                            <p class="ai-match">
+                                <svg class="icon"><use href="#i-sparkle"></use></svg>
+                                <span>{{ rec.match }}% Match</span>
+                            </p>
+                            <h2>{{ rec.movie.title }}</h2>
+                            <div class="ai-meta">
+                                <span class="ai-meta-item">
+                                    <svg class="icon"><use href="#i-star"></use></svg>
+                                    <strong>{{ rec.movie.rating }}</strong>
+                                </span>
+                                <span class="ai-meta-item">
+                                    <svg class="icon"><use href="#i-clock"></use></svg>
+                                    <span>{{ rec.movie.duration_mins }} min</span>
+                                </span>
                             </div>
-                        </article>
-
-                        <article class="ai-card">
-                            <img class="ai-card-poster" src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&h=600&fit=crop" alt="Inception recommendation poster" />
-                            <div class="ai-card-content">
-                                <p class="ai-match">
-                                    <svg class="icon"><use href="#i-sparkle"></use></svg>
-                                    <span>89% Match</span>
-                                </p>
-                                <h2>Inception</h2>
-                                <div class="ai-meta">
-                                    <span class="ai-meta-item">
-                                        <svg class="icon"><use href="#i-star"></use></svg>
-                                        <strong>8.8</strong>
-                                    </span>
-                                    <span class="ai-meta-item">
-                                        <svg class="icon"><use href="#i-clock"></use></svg>
-                                        <span>148 min</span>
-                                    </span>
-                                </div>
-                                <div class="ai-tags">
-                                    <span>Sci-Fi</span>
-                                    <span>Action</span>
-                                    <span>Thriller</span>
-                                </div>
-                                <p class="ai-quote">"You frequently watch Christopher Nolan films"</p>
-                                <div class="ai-card-actions">
-                                    <button class="ai-feedback" type="button" data-ai-feedback="like" aria-label="Like Inception">
-                                        <svg class="icon"><use href="#i-thumbs-up"></use></svg>
-                                    </button>
-                                    <button class="ai-feedback" type="button" data-ai-feedback="dislike" aria-label="Dislike Inception">
-                                        <svg class="icon"><use href="#i-thumbs-down"></use></svg>
-                                    </button>
-                                    <a class="cine-button cine-button-gold" href="{% url 'movie_detail' %}">View Details</a>
-                                </div>
+                            <div class="ai-tags">
+                                <span>{{ rec.movie.genre }}</span>
+                                {% if rec.movie.is_featured %}<span>Featured</span>{% endif %}
                             </div>
-                        </article>
-
-                        <article class="ai-card">
-                            <img class="ai-card-poster" src="https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=400&h=600&fit=crop" alt="The Dark Knight recommendation poster" />
-                            <div class="ai-card-content">
-                                <p class="ai-match">
-                                    <svg class="icon"><use href="#i-sparkle"></use></svg>
-                                    <span>85% Match</span>
-                                </p>
-                                <h2>The Dark Knight</h2>
-                                <div class="ai-meta">
-                                    <span class="ai-meta-item">
-                                        <svg class="icon"><use href="#i-star"></use></svg>
-                                        <strong>9</strong>
-                                    </span>
-                                    <span class="ai-meta-item">
-                                        <svg class="icon"><use href="#i-clock"></use></svg>
-                                        <span>152 min</span>
-                                    </span>
-                                </div>
-                                <div class="ai-tags">
-                                    <span>Action</span>
-                                    <span>Crime</span>
-                                    <span>Drama</span>
-                                </div>
-                                <p class="ai-quote">"Highly-rated action film recommendation"</p>
-                                <div class="ai-card-actions">
-                                    <button class="ai-feedback" type="button" data-ai-feedback="like" aria-label="Like The Dark Knight">
-                                        <svg class="icon"><use href="#i-thumbs-up"></use></svg>
-                                    </button>
-                                    <button class="ai-feedback" type="button" data-ai-feedback="dislike" aria-label="Dislike The Dark Knight">
-                                        <svg class="icon"><use href="#i-thumbs-down"></use></svg>
-                                    </button>
-                                    <a class="cine-button cine-button-gold" href="{% url 'movie_detail' %}">View Details</a>
-                                </div>
+                            <p class="ai-quote">"{{ rec.reason }}"</p>
+                            <div class="ai-card-actions">
+                                <a class="cine-button cine-button-gold" href="{% url 'movie_detail_by_id' rec.movie.id %}">View Details</a>
                             </div>
-                        </article>
-
-                        <article class="ai-card">
-                            <img class="ai-card-poster" src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&h=600&fit=crop" alt="Blade Runner 2049 recommendation poster" />
-                            <div class="ai-card-content">
-                                <p class="ai-match">
-                                    <svg class="icon"><use href="#i-sparkle"></use></svg>
-                                    <span>88% Match</span>
-                                </p>
-                                <h2>Blade Runner 2049</h2>
-                                <div class="ai-meta">
-                                    <span class="ai-meta-item">
-                                        <svg class="icon"><use href="#i-star"></use></svg>
-                                        <strong>8</strong>
-                                    </span>
-                                    <span class="ai-meta-item">
-                                        <svg class="icon"><use href="#i-clock"></use></svg>
-                                        <span>164 min</span>
-                                    </span>
-                                </div>
-                                <div class="ai-tags">
-                                    <span>Sci-Fi</span>
-                                    <span>Drama</span>
-                                    <span>Thriller</span>
-                                </div>
-                                <p class="ai-quote">"Strong match with your viewing history"</p>
-                                <div class="ai-card-actions">
-                                    <button class="ai-feedback" type="button" data-ai-feedback="like" aria-label="Like Blade Runner 2049">
-                                        <svg class="icon"><use href="#i-thumbs-up"></use></svg>
-                                    </button>
-                                    <button class="ai-feedback" type="button" data-ai-feedback="dislike" aria-label="Dislike Blade Runner 2049">
-                                        <svg class="icon"><use href="#i-thumbs-down"></use></svg>
-                                    </button>
-                                    <a class="cine-button cine-button-gold" href="{% url 'movie_detail' %}">View Details</a>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="ai-refresh">
-                        <button class="cine-button" id="refresh-recommendations" type="button">
-                            <svg class="icon"><use href="#i-sparkle"></use></svg>
-                            <span>Refresh Recommendations</span>
-                        </button>
-                    </div>
-                </div>
-            </section>
-        </main>
+                        </div>
+                    </article>
+                {% empty %}
+                    <article class="ai-card">
+                        <div class="ai-card-content">
+                            <h2>No Recommendations Yet</h2>
+                            <p class="ai-quote">Book a few films first, then AI can personalize your picks.</p>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
 {% endblock %}

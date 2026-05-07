@@ -166,10 +166,12 @@
                         <svg class="icon"><use href="#i-sparkle"></use></svg>
                         <span>AI Picks</span>
                     </a>
-                    <a class="mini-link is-muted" href="{% url 'admin_dashboard' %}">
-                        <svg class="icon"><use href="#i-settings"></use></svg>
-                        <span>Admin</span>
-                    </a>
+                    {% if user.is_authenticated and user.role in 'admin staff' %}
+                        <a class="mini-link is-muted" href="{% url 'admin_dashboard' %}">
+                            <svg class="icon"><use href="#i-settings"></use></svg>
+                            <span>Admin</span>
+                        </a>
+                    {% endif %}
                     <a class="cine-button cine-button-gold" href="{% url 'booking' %}">
                         <svg class="icon"><use href="#i-play"></use></svg>
                         <span>Book Now</span>

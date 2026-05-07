@@ -41,7 +41,7 @@
                     <div class="film-library-grid">
                         {% for movie in movies %}
                             <article class="movie-card">
-                                <a class="movie-card-link" href="{% url 'booking' %}">
+                                <a class="movie-card-link" href="{% url 'movie_detail_by_id' movie.id %}">
                                     {% if movie.poster_url %}
                                         <div class="movie-poster" style="--poster-art: url('{{ movie.poster_url }}') center/cover no-repeat;">
                                             <span class="movie-card-badge">{{ movie.genre }}</span>

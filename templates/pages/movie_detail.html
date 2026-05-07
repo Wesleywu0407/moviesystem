@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}CINEVERSE Movie Detail{% endblock %}
+{% block title %}{% if movie %}{{ movie.title }} | CINEVERSE{% else %}CINEVERSE Movie Detail{% endif %}{% endblock %}
 {% block body_class %}movie-detail-page{% endblock %}
 
 {% block content %}
@@ -14,7 +14,7 @@
                             <span>Back to Films</span>
                         </a>
                         <p class="section-kicker detail-kicker">Now Screening</p>
-                        <h1 class="section-title">Echoes of <span>Eternity</span></h1>
+                        <h1 class="section-title">{% if movie %}{{ movie.title }}{% else %}Movie <span>Detail</span>{% endif %}</h1>
                     </div>
                 </div>
             </section>
@@ -23,13 +23,17 @@
             <section id="tickets" class="section spotlight-section">
                 <div class="container spotlight-shell">
                     <div class="spotlight-poster">
-                        <img src="https://images.unsplash.com/photo-1739891251370-05b62a54697b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1200" alt="Echoes of Eternity poster" />
+                        {% if movie and movie.poster_url %}
+                            <img src="{{ movie.poster_url }}" alt="{{ movie.title }} poster" />
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1739891251370-05b62a54697b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1200" alt="Movie poster" />
+                        {% endif %}
                         <button class="spotlight-play" type="button" aria-label="Play trailer">
                             <svg class="icon"><use href="#i-play"></use></svg>
                         </button>
                         <div class="spotlight-caption">
                             <p class="spotlight-caption-kicker">A Cosmic Odyssey</p>
-                            <h3>Echoes of Eternity</h3>
+                            <h3>{% if movie %}{{ movie.title }}{% else %}CINEVERSE{% endif %}</h3>
                         </div>
                     </div>
 
@@ -37,23 +41,24 @@
                         <div class="spotlight-rating-row">
                             <div class="spotlight-rating">
                                 <svg class="icon"><use href="#i-star"></use></svg>
-                                <strong>9.2</strong>
+                                <strong>{% if movie %}{{ movie.rating }}{% else %}N/A{% endif %}</strong>
                                 <span>/ 10</span>
                             </div>
-                            <p class="spotlight-genre">Science Fiction &middot; Epic Drama</p>
+                            <p class="spotlight-genre">{% if movie %}{{ movie.genre }}{% else %}Cinema{% endif %}</p>
                         </div>
 
-                        <h2 class="spotlight-title">Echoes of Eternity</h2>
+                        <h2 class="spotlight-title">{% if movie %}{{ movie.title }}{% else %}Movie Detail{% endif %}</h2>
                         <p class="spotlight-director">
                             <svg class="icon"><use href="#i-film"></use></svg>
-                            <span>Directed by <strong>Elena Vasquez</strong></span>
+                            <span>Runtime <strong>{% if movie %}{{ movie.duration_mins }} mins{% else %}N/A{% endif %}</strong></span>
                         </p>
 
                         <p class="spotlight-description">
-                            In the year 2157, when humanity discovers that the fabric of time itself
-                            is unraveling, one astronaut must travel beyond the edge of the known
-                            universe to confront the source of the collapse and the ghosts of her own
-                            past.
+                            {% if movie %}
+                                {{ movie.description }}
+                            {% else %}
+                                Explore the latest cinematic stories on CINEVERSE.
+                            {% endif %}
                         </p>
 
                         <div class="spotlight-group">

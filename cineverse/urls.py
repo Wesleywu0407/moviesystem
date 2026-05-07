@@ -11,6 +11,7 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("index/", views.index, name="index"),
     path("films/", views.films, name="films"),
+    path("movie-detail/<int:movie_id>/", views.movie_detail, name="movie_detail_by_id"),
     path("movie-detail/", views.movie_detail, name="movie_detail"),
     path("directors/", views.directors, name="directors"),
     path("genres/", views.genres, name="genres"),
