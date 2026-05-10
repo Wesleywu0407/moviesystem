@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Archive Session | CINEVERSE{% endblock %}
+{% block body_class %}admin-page{% endblock %}
+
+{% block content %}
+<main>
+    <section class="admin-section">
+        <div class="container">
+            <div class="admin-head">
+                <h1 class="section-title">Archive Session</h1>
+            </div>
+            <p class="admin-subtitle">Confirm archive from the CINEVERSE showtime schedule.</p>
+
+            <div class="admin-card admin-form-card">
+                <h2 class="admin-confirm-title">{{ session_obj.movie.title }}</h2>
+                <p class="admin-confirm-copy">
+                    {{ session_obj.theatre.name }} on {{ session_obj.start_time|date:"M j, Y H:i" }} will be hidden without removing it from the database.
+                </p>
+                <form class="admin-form-actions" method="post">
+                    {% csrf_token %}
+                    <a class="cine-button cine-button-ghost" href="{% url 'session_list' %}">Cancel</a>
+                    <button class="cine-button cine-button-gold" type="submit">Archive Session</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

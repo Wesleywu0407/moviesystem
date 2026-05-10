@@ -10,6 +10,7 @@ class Movie(models.Model):
     poster_url = models.URLField(blank=True)
     release_date = models.DateField()
     is_featured = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["-release_date", "title"]
@@ -26,6 +27,7 @@ class Session(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     seats_available = models.PositiveIntegerField()
     is_active = models.BooleanField(default=True)
+    is_archived = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["start_time"]

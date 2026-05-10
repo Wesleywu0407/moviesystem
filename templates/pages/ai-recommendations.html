@@ -20,12 +20,12 @@
             <div class="ai-stats" aria-label="AI recommendation stats">
                 <article class="ai-stat">
                     <svg class="icon"><use href="#i-trend"></use></svg>
-                    <strong>{{ recommendations|length }}</strong>
+                    <strong>{{ recommended|length }}</strong>
                     <span>Recommendations</span>
                 </article>
                 <article class="ai-stat">
                     <svg class="icon"><use href="#i-film"></use></svg>
-                    <strong>{{ booked_titles|length }}</strong>
+                    <strong>{{ user_history|length }}</strong>
                     <span>Booked Films</span>
                 </article>
                 <article class="ai-stat">
@@ -35,49 +35,27 @@
                 </article>
             </div>
 
-            {% if top_genres %}
-                <p class="ai-subtitle" style="margin-bottom: 1.25rem;">Top Genres: {{ top_genres|join:", " }}</p>
+            {% if user_history %}
+                <p class="ai-subtitle" style="margin-bottom: 1.25rem;">Watch History: {{ user_history|join:", " }}</p>
             {% endif %}
 
             <div class="ai-grid">
-                {% for rec in recommendations %}
-                    <article class="ai-card">
-                        {% if rec.movie.poster_url %}
-                            <img class="ai-card-poster" src="{{ rec.movie.poster_url }}" alt="{{ rec.movie.title }} recommendation poster" />
-                        {% else %}
-                            <div class="ai-card-poster" style="background:linear-gradient(160deg,#161616 0%,#080808 100%);"></div>
-                        {% endif %}
+                {% for rec in recommended %}
+                    <article class="ai-card ai-card-recommendation">
                         <div class="ai-card-content">
                             <p class="ai-match">
                                 <svg class="icon"><use href="#i-sparkle"></use></svg>
                                 <span>{{ rec.match }}% Match</span>
                             </p>
-                            <h2>{{ rec.movie.title }}</h2>
-                            <div class="ai-meta">
-                                <span class="ai-meta-item">
-                                    <svg class="icon"><use href="#i-star"></use></svg>
-                                    <strong>{{ rec.movie.rating }}</strong>
-                                </span>
-                                <span class="ai-meta-item">
-                                    <svg class="icon"><use href="#i-clock"></use></svg>
-                                    <span>{{ rec.movie.duration_mins }} min</span>
-                                </span>
-                            </div>
-                            <div class="ai-tags">
-                                <span>{{ rec.movie.genre }}</span>
-                                {% if rec.movie.is_featured %}<span>Featured</span>{% endif %}
-                            </div>
+                            <h2>{{ rec.title }}</h2>
                             <p class="ai-quote">"{{ rec.reason }}"</p>
-                            <div class="ai-card-actions">
-                                <a class="cine-button cine-button-gold" href="{% url 'movie_detail_by_id' rec.movie.id %}">View Details</a>
-                            </div>
                         </div>
                     </article>
                 {% empty %}
                     <article class="ai-card">
                         <div class="ai-card-content">
                             <h2>No Recommendations Yet</h2>
-                            <p class="ai-quote">Book a few films first, then AI can personalize your picks.</p>
+                            <p class="ai-quote">Claude recommendations will appear here after the API key is configured and the catalog has available movies.</p>
                         </div>
                     </article>
                 {% endfor %}

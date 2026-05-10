@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}{{ form_title }} | CINEVERSE{% endblock %}
+{% block body_class %}admin-page{% endblock %}
+
+{% block content %}
+<main>
+    <section class="admin-section">
+        <div class="container">
+            <div class="admin-head">
+                <h1 class="section-title">{{ form_title }}</h1>
+            </div>
+            <p class="admin-subtitle">Assign movies to theaters and keep screening inventory current.</p>
+
+            <div class="admin-card admin-form-card">
+                <form class="movie-admin-form" method="post">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="admin-form-errors">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+                    <div class="admin-form-grid">
+                        {% for field in form %}
+                            <div class="admin-form-field {% if field.name == 'is_active' %}is-checkbox{% endif %}">
+                                {% if field.name == 'is_active' %}
+                                    <label for="{{ field.id_for_label }}">{{ field }} {{ field.label }}</label>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {{ field }}
+                                {% endif %}
+                                {% if field.help_text %}
+                                    <small>{{ field.help_text }}</small>
+                                {% endif %}
+                                {% for error in field.errors %}
+                                    <span class="admin-form-error">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="admin-form-actions">
+                        <a class="cine-button cine-button-ghost" href="{% url 'session_list' %}">Cancel</a>
+                        <button class="cine-button cine-button-gold" type="submit">{{ submit_label }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

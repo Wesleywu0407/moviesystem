@@ -1,8 +1,8 @@
 import json
-import os
 import re
-from collections import Counter
 
+from django import forms
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -10,10 +10,80 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.db import transaction
 from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render
+from openai import OpenAI
 
 from accounts.forms import CineverseUserCreationForm
 from bookings.models import Booking
 from movies.models import Movie, Session
+
+
+class MovieForm(forms.ModelForm):
+    class Meta:
+        model = Movie
+        fields = [
+            "title",
+            "description",
+            "duration_mins",
+            "genre",
+            "rating",
+            "poster_url",
+            "release_date",
+            "is_featured",
+        ]
+        widgets = {
+            "release_date": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+            "description": forms.Textarea(attrs={"rows": 5}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["release_date"].input_formats = ["%Y-%m-%d"]
+        placeholders = {
+            "title": "Film title",
+            "description": "Synopsis for the film collection",
+            "duration_mins": "120",
+            "genre": "Drama",
+            "rating": "PG-13",
+            "poster_url": "https://...",
+        }
+        for name, field in self.fields.items():
+            field.widget.attrs.setdefault("class", "admin-form-control")
+            if name in placeholders:
+                field.widget.attrs.setdefault("placeholder", placeholders[name])
+
+
+class SessionForm(forms.ModelForm):
+    class Meta:
+        model = Session
+        fields = [
+            "movie",
+            "theatre",
+            "start_time",
+            "end_time",
+            "price",
+            "seats_available",
+            "is_active",
+        ]
+        widgets = {
+            "start_time": forms.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
+            "end_time": forms.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["start_time"].input_formats = ["%Y-%m-%dT%H:%M"]
+        self.fields["end_time"].input_formats = ["%Y-%m-%dT%H:%M"]
+        placeholders = {
+            "price": "18.00",
+            "seats_available": "120",
+        }
+        for name, field in self.fields.items():
+            field.widget.attrs.setdefault("class", "admin-form-control")
+            if name in placeholders:
+                field.widget.attrs.setdefault("placeholder", placeholders[name])
+
+
+staff_required = user_passes_test(lambda u: u.role in ["staff", "admin"], login_url="home")
 
 
 def home(request):
@@ -25,8 +95,118 @@ def index(request):
 
 
 def films(request):
-    movies = Movie.objects.all().order_by("-release_date")
+    movies = Movie.objects.filter(is_archived=False).order_by("-release_date")
     return render(request, "pages/films.html", {"movies": movies})
+
+
+@login_required(login_url="login")
+@staff_required
+def movie_list(request):
+    movies = Movie.objects.filter(is_archived=False).order_by("-release_date", "title")
+    return render(request, "pages/movie_list.html", {"movies": movies})
+
+
+@login_required(login_url="login")
+@staff_required
+def movie_create(request):
+    form = MovieForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        movie = form.save()
+        messages.success(request, f"{movie.title} has been added to CINEVERSE.")
+        return redirect("movie_list")
+
+    return render(
+        request,
+        "pages/movie_form.html",
+        {"form": form, "form_title": "Add New Movie", "submit_label": "Create Movie"},
+    )
+
+
+@login_required(login_url="login")
+@staff_required
+def movie_edit(request, pk):
+    movie = get_object_or_404(Movie, pk=pk)
+    form = MovieForm(request.POST or None, instance=movie)
+    if request.method == "POST" and form.is_valid():
+        movie = form.save()
+        messages.success(request, f"{movie.title} has been updated.")
+        return redirect("movie_list")
+
+    return render(
+        request,
+        "pages/movie_form.html",
+        {"form": form, "movie": movie, "form_title": "Edit Movie", "submit_label": "Save Changes"},
+    )
+
+
+@login_required(login_url="login")
+@staff_required
+def movie_delete(request, pk):
+    movie = get_object_or_404(Movie, pk=pk)
+    if request.method == "POST":
+        movie.is_archived = True
+        movie.save()
+        messages.success(request, f"{movie.title} has been archived.")
+        return redirect("movie_list")
+
+    return render(request, "pages/movie_confirm_delete.html", {"movie": movie})
+
+
+@login_required(login_url="login")
+@staff_required
+def session_list(request):
+    sessions = (
+        Session.objects.filter(is_archived=False)
+        .select_related("movie", "theatre", "theatre__cinema")
+        .order_by("start_time")
+    )
+    return render(request, "pages/session_list.html", {"sessions": sessions})
+
+
+@login_required(login_url="login")
+@staff_required
+def session_create(request):
+    form = SessionForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        session = form.save()
+        messages.success(request, f"Session for {session.movie.title} has been created.")
+        return redirect("session_list")
+
+    return render(
+        request,
+        "pages/session_form.html",
+        {"form": form, "form_title": "Add New Session", "submit_label": "Create Session"},
+    )
+
+
+@login_required(login_url="login")
+@staff_required
+def session_edit(request, pk):
+    session = get_object_or_404(Session.objects.select_related("movie"), pk=pk)
+    form = SessionForm(request.POST or None, instance=session)
+    if request.method == "POST" and form.is_valid():
+        session = form.save()
+        messages.success(request, f"Session for {session.movie.title} has been updated.")
+        return redirect("session_list")
+
+    return render(
+        request,
+        "pages/session_form.html",
+        {"form": form, "session_obj": session, "form_title": "Edit Session", "submit_label": "Save Changes"},
+    )
+
+
+@login_required(login_url="login")
+@staff_required
+def session_delete(request, pk):
+    session = get_object_or_404(Session.objects.select_related("movie", "theatre"), pk=pk)
+    if request.method == "POST":
+        session.is_archived = True
+        session.save()
+        messages.success(request, f"Session for {session.movie.title} has been archived.")
+        return redirect("session_list")
+
+    return render(request, "pages/session_confirm_delete.html", {"session_obj": session})
 
 
 def movie_detail(request, movie_id=None):
@@ -37,10 +217,10 @@ def movie_detail(request, movie_id=None):
     else:
         title = request.GET.get("title", "").strip()
         if title:
-            movie = Movie.objects.filter(title__iexact=title).first()
+            movie = Movie.objects.filter(title__iexact=title, is_archived=False).first()
 
     if movie is None:
-        movie = Movie.objects.order_by("-release_date").first()
+        movie = Movie.objects.filter(is_archived=False).order_by("-release_date").first()
 
     return render(request, "pages/movie-detail.html", {"movie": movie})
 
@@ -90,144 +270,90 @@ def register_page(request):
     return render(request, "pages/register.html", {"form": form})
 
 
-def _extract_text_from_anthropic_message(message):
-    content_blocks = getattr(message, "content", []) or []
-    text_chunks = []
-    for block in content_blocks:
-        if getattr(block, "type", "") == "text":
-            text_chunks.append(getattr(block, "text", ""))
-    return "\n".join(text_chunks).strip()
-
-
 def _parse_ai_json_recommendations(raw_text):
     if not raw_text:
-        return {}
+        return []
 
     cleaned = raw_text.strip()
     cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned, flags=re.IGNORECASE)
     cleaned = re.sub(r"\s*```$", "", cleaned)
 
     try:
-        return json.loads(cleaned)
+        parsed = json.loads(cleaned)
     except json.JSONDecodeError:
-        start = cleaned.find("{")
-        end = cleaned.rfind("}")
+        start = cleaned.find("[")
+        end = cleaned.rfind("]")
         if start != -1 and end != -1 and end > start:
             try:
-                return json.loads(cleaned[start : end + 1])
+                parsed = json.loads(cleaned[start : end + 1])
             except json.JSONDecodeError:
-                return {}
-    return {}
+                return []
+        else:
+            return []
+
+    if isinstance(parsed, list):
+        return parsed
+    if isinstance(parsed, dict):
+        return parsed.get("recommendations", [])
+    return []
 
 
-@login_required(login_url="login")
 def ai_recommendations(request):
-    all_movies = list(Movie.objects.all().order_by("-release_date"))
-    booking_qs = Booking.objects.filter(user=request.user).select_related("session__movie")
+    movies = Movie.objects.filter(is_archived=False)
+    recommended = []
+    user_history = []
 
-    booked_movies = []
-    seen_ids = set()
-    for booking in booking_qs:
-        movie = booking.session.movie
-        if movie.id not in seen_ids:
-            booked_movies.append(movie)
-            seen_ids.add(movie.id)
+    if request.user.is_authenticated:
+        bookings = Booking.objects.filter(user=request.user).select_related("session__movie")
+        user_history = [booking.session.movie.title for booking in bookings]
 
-    booked_titles = [movie.title for movie in booked_movies]
-    preferred_genres = [movie.genre for movie in booked_movies if movie.genre]
-    top_genres = [genre for genre, _ in Counter(preferred_genres).most_common(3)]
+    movie_list = [f"{movie.title} ({movie.genre}, rating {movie.rating})" for movie in movies]
 
-    candidates = [movie for movie in all_movies if movie.id not in seen_ids]
-    if not candidates:
-        candidates = all_movies
+    if user_history:
+        prompt = f"""User watched: {', '.join(set(user_history))}.
+Available movies: {', '.join(movie_list)}.
+Recommend 3 movies with reasons.
+Reply ONLY in JSON format, no markdown:
+[{{"title": "Movie Title", "reason": "Why they will love it", "match": 95}}]"""
+    else:
+        prompt = f"""Available movies: {', '.join(movie_list)}.
+Recommend 3 movies for a new cinema user.
+Reply ONLY in JSON format, no markdown:
+[{{"title": "Movie Title", "reason": "Why they will love it", "match": 90}}]"""
 
-    recommendations = []
-    ai_used = False
+    try:
+        client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=500,
+        )
+        raw = response.choices[0].message.content
+        recommended = _parse_ai_json_recommendations(raw)[:3]
+    except Exception as e:
+        import logging
 
-    api_key = os.getenv("ANTHROPIC_API_KEY", "")
-    if api_key and candidates:
-        try:
-            import anthropic
+        logger = logging.getLogger(__name__)
+        logger.error(f"AI recommendation error: {e}")
+        print(f"AI ERROR: {e}")  # also print to console
+        recommended = []
 
-            client = anthropic.Anthropic(api_key=api_key)
-
-            candidate_lines = []
-            for movie in candidates:
-                candidate_lines.append(
-                    f"- id: {movie.id}, title: {movie.title}, genre: {movie.genre}, rating: {movie.rating}, duration_mins: {movie.duration_mins}, description: {movie.description[:180]}"
-                )
-
-            prompt = (
-                "You are a movie recommendation assistant for CINEVERSE.\n"
-                f"User booked movies: {booked_titles if booked_titles else 'None yet'}.\n"
-                f"User preferred genres (inferred): {top_genres if top_genres else 'Unknown'}.\n\n"
-                "Recommend exactly 3 movies from this existing database only:\n"
-                + "\n".join(candidate_lines)
-                + "\n\nReturn ONLY valid JSON in this format:\n"
-                '{\n  "recommendations": [\n    {"id": 1, "match": 92, "reason": "short reason"},\n    {"id": 2, "match": 88, "reason": "short reason"},\n    {"id": 3, "match": 85, "reason": "short reason"}\n  ]\n}'
-            )
-
-            message = client.messages.create(
-                model="claude-opus-4-5",
-                max_tokens=1024,
-                messages=[{"role": "user", "content": prompt}],
-            )
-
-            raw_text = _extract_text_from_anthropic_message(message)
-            parsed = _parse_ai_json_recommendations(raw_text)
-
-            candidate_map = {movie.id: movie for movie in candidates}
-            for item in parsed.get("recommendations", [])[:3]:
-                movie_id = item.get("id")
-                movie = candidate_map.get(movie_id)
-                if not movie:
-                    continue
-                recommendations.append(
-                    {
-                        "movie": movie,
-                        "match": item.get("match", 85),
-                        "reason": item.get("reason", "Recommended based on your booking history."),
-                    }
-                )
-
-            ai_used = len(recommendations) > 0
-        except Exception:
-            ai_used = False
-
-    if not recommendations:
-        # Fallback recommender if API key isn't set or API parsing fails.
-        genre_set = set(top_genres)
-        ranked = []
-        for movie in candidates:
-            score = 80
-            if movie.genre in genre_set:
-                score += 10
-            if movie.is_featured:
-                score += 5
-            ranked.append((score, movie))
-
-        ranked.sort(key=lambda item: item[0], reverse=True)
-        for score, movie in ranked[:3]:
-            reason = (
-                f"Because you often watch {movie.genre} films."
-                if movie.genre in genre_set
-                else "Popular pick from the CINEVERSE catalog."
-            )
-            recommendations.append({"movie": movie, "match": score, "reason": reason})
-
-    context = {
-        "recommendations": recommendations,
-        "booked_titles": booked_titles,
-        "top_genres": top_genres,
-        "ai_used": ai_used,
-    }
-    return render(request, "pages/ai-recommendations.html", context)
+    return render(
+        request,
+        "pages/ai-recommendations.html",
+        {
+            "recommended": recommended,
+            "user_history": user_history,
+            "movies": movies,
+            "ai_used": bool(recommended),
+        },
+    )
 
 
 @login_required(login_url="login")
 def booking(request):
     sessions = (
-        Session.objects.filter(is_active=True, seats_available__gt=0)
+        Session.objects.filter(is_active=True, is_archived=False, seats_available__gt=0, movie__is_archived=False)
         .select_related("movie", "theatre", "theatre__cinema")
         .annotate(unit_price=F("price"))
         .order_by("start_time")
@@ -236,6 +362,10 @@ def booking(request):
     if request.method == "POST":
         session_id = request.POST.get("session_id")
         quantity_raw = request.POST.get("quantity", "1")
+
+        if not session_id:
+            messages.error(request, "Please select a session before confirming your booking.")
+            return render(request, "pages/booking.html", {"sessions": sessions, "selected_session_id": ""})
 
         try:
             quantity = int(quantity_raw)
@@ -250,7 +380,7 @@ def booking(request):
                 chosen_session = (
                     Session.objects.select_for_update()
                     .select_related("movie", "theatre", "theatre__cinema")
-                    .get(id=session_id, is_active=True)
+                    .get(id=session_id, is_active=True, is_archived=False, movie__is_archived=False)
                 )
 
                 if chosen_session.seats_available < quantity:
@@ -299,6 +429,8 @@ def booking_confirmation(request, booking_ref):
 
 
 @login_required(login_url="login")
-@user_passes_test(lambda u: u.role in ["admin", "staff"], login_url="home")
+@staff_required
 def admin_dashboard(request):
-    return render(request, "pages/admin.html")
+    movies = Movie.objects.filter(is_archived=False).order_by("-release_date", "title")
+    sessions = Session.objects.filter(is_archived=False).select_related("movie", "theatre").order_by("start_time")
+    return render(request, "pages/admin.html", {"movies": movies, "sessions": sessions})

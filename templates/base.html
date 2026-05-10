@@ -194,6 +194,14 @@
             </div>
         </header>
 
+{% if messages %}
+<div class="site-messages" aria-live="polite">
+    {% for message in messages %}
+        <div class="site-message site-message-{{ message.tags|default:'info' }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
 {% block content %}{% endblock %}
 
 <footer id="footer" class="site-footer footer-section">

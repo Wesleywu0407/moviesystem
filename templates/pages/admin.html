@@ -14,6 +14,17 @@
                     </div>
                     <p class="admin-subtitle">Manage Films, Showtimes &amp; Theaters</p>
 
+                    <div class="admin-quick-links" aria-label="Admin management links">
+                        <a class="cine-button cine-button-gold" href="{% url 'movie_list' %}">
+                            <svg class="icon"><use href="#i-film"></use></svg>
+                            <span>Manage Movies</span>
+                        </a>
+                        <a class="cine-button cine-button-outline" href="{% url 'session_list' %}">
+                            <svg class="icon"><use href="#i-calendar"></use></svg>
+                            <span>Manage Sessions</span>
+                        </a>
+                    </div>
+
                     <div class="admin-tabs" role="tablist" aria-label="Admin sections">
                         <button class="admin-tab is-active" type="button" role="tab" aria-selected="true" data-admin-tab="films">
                             <svg class="icon"><use href="#i-film"></use></svg>
@@ -34,7 +45,7 @@
                             <svg class="icon"><use href="#i-search"></use></svg>
                             <input type="search" placeholder="Search..." aria-label="Search admin records" />
                         </label>
-                        <button class="cine-button cine-button-gold admin-add-button" type="button">+ Add New</button>
+                        <a class="cine-button cine-button-gold admin-add-button" href="{% url 'movie_create' %}">+ Add New Movie</a>
                     </div>
 
                     <div class="admin-data-card">
@@ -50,42 +61,33 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for movie in movies %}
                                     <tr>
-                                        <td>Interstellar</td>
-                                        <td>Sci-Fi</td>
-                                        <td>169 min</td>
-                                        <td><span class="status-badge is-now-playing">Now Playing</span></td>
+                                        <td>{{ movie.title }}</td>
+                                        <td>{{ movie.genre }}</td>
+                                        <td>{{ movie.duration_mins }} min</td>
+                                        <td>
+                                            {% if movie.is_featured %}
+                                                <span class="status-badge is-now-playing">Featured</span>
+                                            {% else %}
+                                                <span class="status-badge is-classic">Catalog</span>
+                                            {% endif %}
+                                        </td>
                                         <td>
                                             <div class="admin-actions-cell">
-                                                <button class="admin-icon-button" type="button" aria-label="Edit Interstellar"><svg class="icon"><use href="#i-pencil"></use></svg></button>
-                                                <button class="admin-icon-button" type="button" aria-label="Delete Interstellar"><svg class="icon"><use href="#i-trash"></use></svg></button>
+                                                <a class="admin-icon-button" href="{% url 'movie_edit' movie.pk %}" aria-label="Edit {{ movie.title }}"><svg class="icon"><use href="#i-pencil"></use></svg></a>
+                                                <form class="admin-inline-form" method="post" action="{% url 'movie_delete' movie.pk %}">
+                                                    {% csrf_token %}
+                                                    <button class="admin-icon-button" type="submit" aria-label="Archive {{ movie.title }}"><svg class="icon"><use href="#i-trash"></use></svg></button>
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>
+                                    {% empty %}
                                     <tr>
-                                        <td>The Godfather</td>
-                                        <td>Crime</td>
-                                        <td>175 min</td>
-                                        <td><span class="status-badge is-classic">Classic</span></td>
-                                        <td>
-                                            <div class="admin-actions-cell">
-                                                <button class="admin-icon-button" type="button" aria-label="Edit The Godfather"><svg class="icon"><use href="#i-pencil"></use></svg></button>
-                                                <button class="admin-icon-button" type="button" aria-label="Delete The Godfather"><svg class="icon"><use href="#i-trash"></use></svg></button>
-                                            </div>
-                                        </td>
+                                        <td colspan="5" class="admin-empty-state">No movies have been added yet.</td>
                                     </tr>
-                                    <tr>
-                                        <td>The Dark Knight</td>
-                                        <td>Action</td>
-                                        <td>152 min</td>
-                                        <td><span class="status-badge is-now-playing">Now Playing</span></td>
-                                        <td>
-                                            <div class="admin-actions-cell">
-                                                <button class="admin-icon-button" type="button" aria-label="Edit The Dark Knight"><svg class="icon"><use href="#i-pencil"></use></svg></button>
-                                                <button class="admin-icon-button" type="button" aria-label="Delete The Dark Knight"><svg class="icon"><use href="#i-trash"></use></svg></button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -102,42 +104,24 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Interstellar</td>
-                                        <td>IMAX Theater</td>
-                                        <td class="admin-time-cell"><svg class="icon"><use href="#i-calendar"></use></svg>14:30</td>
-                                        <td>2026-04-15</td>
-                                        <td>
-                                            <div class="admin-actions-cell">
-                                                <button class="admin-icon-button" type="button" aria-label="Edit Interstellar showtime"><svg class="icon"><use href="#i-pencil"></use></svg></button>
-                                                <button class="admin-icon-button" type="button" aria-label="Delete Interstellar showtime"><svg class="icon"><use href="#i-trash"></use></svg></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>The Godfather</td>
-                                        <td>Classic Hall</td>
-                                        <td class="admin-time-cell"><svg class="icon"><use href="#i-calendar"></use></svg>19:00</td>
-                                        <td>2026-04-15</td>
-                                        <td>
-                                            <div class="admin-actions-cell">
-                                                <button class="admin-icon-button" type="button" aria-label="Edit The Godfather showtime"><svg class="icon"><use href="#i-pencil"></use></svg></button>
-                                                <button class="admin-icon-button" type="button" aria-label="Delete The Godfather showtime"><svg class="icon"><use href="#i-trash"></use></svg></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>The Dark Knight</td>
-                                        <td>Dolby Theater</td>
-                                        <td class="admin-time-cell"><svg class="icon"><use href="#i-calendar"></use></svg>21:00</td>
-                                        <td>2026-04-15</td>
-                                        <td>
-                                            <div class="admin-actions-cell">
-                                                <button class="admin-icon-button" type="button" aria-label="Edit The Dark Knight showtime"><svg class="icon"><use href="#i-pencil"></use></svg></button>
-                                                <button class="admin-icon-button" type="button" aria-label="Delete The Dark Knight showtime"><svg class="icon"><use href="#i-trash"></use></svg></button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    {% for session in sessions|slice:":5" %}
+                                        <tr>
+                                            <td>{{ session.movie.title }}</td>
+                                            <td>{{ session.theatre.name }}</td>
+                                            <td class="admin-time-cell"><svg class="icon"><use href="#i-calendar"></use></svg>{{ session.start_time|date:"H:i" }}</td>
+                                            <td>{{ session.start_time|date:"Y-m-d" }}</td>
+                                            <td>
+                                                <div class="admin-actions-cell">
+                                                    <a class="admin-icon-button" href="{% url 'session_edit' session.pk %}" aria-label="Edit {{ session.movie.title }} session"><svg class="icon"><use href="#i-pencil"></use></svg></a>
+                                                    <a class="admin-icon-button" href="{% url 'session_delete' session.pk %}" aria-label="Archive {{ session.movie.title }} session"><svg class="icon"><use href="#i-trash"></use></svg></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="admin-empty-state">No sessions have been scheduled yet.</td>
+                                        </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>

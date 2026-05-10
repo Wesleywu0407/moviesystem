@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Movies | CINEVERSE{% endblock %}
+{% block body_class %}admin-page{% endblock %}
+
+{% block content %}
+<main>
+    <section class="admin-section">
+        <div class="container">
+            <div class="admin-head admin-head-row">
+                <div>
+                    <h1 class="section-title">Manage Movies</h1>
+                    <p class="admin-subtitle">Create, edit, and retire films in the CINEVERSE catalog.</p>
+                </div>
+                <a class="cine-button cine-button-gold admin-add-button" href="{% url 'movie_create' %}">+ Add Movie</a>
+            </div>
+
+            <div class="admin-data-card">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Genre</th>
+                            <th>Rating</th>
+                            <th>Duration</th>
+                            <th>Release</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for movie in movies %}
+                            <tr>
+                                <td>{{ movie.title }}</td>
+                                <td>{{ movie.genre }}</td>
+                                <td>{{ movie.rating }}</td>
+                                <td>{{ movie.duration_mins }} min</td>
+                                <td>{{ movie.release_date|date:"M j, Y" }}</td>
+                                <td>
+                                    {% if movie.is_featured %}
+                                        <span class="status-badge is-now-playing">Featured</span>
+                                    {% else %}
+                                        <span class="status-badge is-classic">Catalog</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="admin-actions-cell">
+                                        <a class="admin-icon-button" href="{% url 'movie_edit' movie.pk %}" aria-label="Edit {{ movie.title }}"><svg class="icon"><use href="#i-pencil"></use></svg></a>
+                                        <a class="admin-icon-button" href="{% url 'movie_delete' movie.pk %}" aria-label="Archive {{ movie.title }}"><svg class="icon"><use href="#i-trash"></use></svg></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" class="admin-empty-state">No movies have been added yet.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

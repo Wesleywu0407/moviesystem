@@ -7,6 +7,7 @@ class Cinema(models.Model):
     city = models.CharField(max_length=100)
     phone = models.CharField(max_length=30)
     is_active = models.BooleanField(default=True)
+    is_archived = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

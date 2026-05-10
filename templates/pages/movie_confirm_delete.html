@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Archive {{ movie.title }} | CINEVERSE{% endblock %}
+{% block body_class %}admin-page{% endblock %}
+
+{% block content %}
+<main>
+    <section class="admin-section">
+        <div class="container">
+            <div class="admin-head">
+                <h1 class="section-title">Archive Movie</h1>
+            </div>
+            <p class="admin-subtitle">Confirm archive from the CINEVERSE film catalog.</p>
+
+            <div class="admin-card admin-form-card">
+                <h2 class="admin-confirm-title">{{ movie.title }}</h2>
+                <p class="admin-confirm-copy">This hides the movie from public and staff lists without removing it from the database.</p>
+                <form class="admin-form-actions" method="post">
+                    {% csrf_token %}
+                    <a class="cine-button cine-button-ghost" href="{% url 'movie_list' %}">Cancel</a>
+                    <button class="cine-button cine-button-gold" type="submit">Archive Movie</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

@@ -28,18 +28,30 @@
                 {% if sessions %}
                     <div class="booking-showtime-grid">
                         {% for session in sessions %}
-                            <article class="booking-showtime-card" style="cursor:default;">
-                                <span class="booking-showtime-time">
+                            <button
+                                class="booking-showtime-card booking-session-card{% if selected_session_id == session.id|stringformat:'s' %} is-selected{% endif %}"
+                                type="button"
+                                data-session-card
+                                data-session-id="{{ session.id }}"
+                                aria-pressed="{% if selected_session_id == session.id|stringformat:'s' %}true{% else %}false{% endif %}"
+                            >
+                                <span class="booking-session-title">{{ session.movie.title }}</span>
+                                <span class="booking-session-detail">
                                     <svg class="icon"><use href="#i-clock"></use></svg>
-                                    <span>{{ session.start_time|date:"D, d M Y · H:i" }}</span>
+                                    {{ session.start_time|date:"D, d M Y · H:i" }}
                                 </span>
-                                <span class="booking-showtime-meta" style="display:block;">
-                                    <span><strong>{{ session.movie.title }}</strong></span>
-                                    <span>{{ session.theatre.cinema.name }} — {{ session.theatre.name }}</span>
-                                    <span>Price: ${{ session.price }}</span>
-                                    <span>Seats Left: {{ session.seats_available }}</span>
+                                <span class="booking-session-detail">
+                                    <svg class="icon"><use href="#i-map-pin"></use></svg>
+                                    {{ session.theatre.cinema.name }} — {{ session.theatre.name }}
                                 </span>
-                            </article>
+                                <span class="booking-session-meta">
+                                    <span>${{ session.price }}</span>
+                                    <span>{{ session.seats_available }} seats left</span>
+                                </span>
+                                <span class="booking-session-check">
+                                    <svg class="icon"><use href="#i-check"></use></svg>
+                                </span>
+                            </button>
                         {% endfor %}
                     </div>
                 {% else %}
@@ -49,24 +61,19 @@
 
             <section class="booking-panel">
                 <h2 class="booking-section-title">Create Booking</h2>
-                <form method="post" action="{% url 'booking' %}" class="booking-payment-form">
+                <form method="post" action="{% url 'booking' %}" class="booking-payment-form" data-booking-form>
                     {% csrf_token %}
 
-                    <div class="booking-field">
-                        <label for="session_id">Choose Session</label>
-                        <select name="session_id" id="session_id" required style="width:100%; padding:0.85rem 1rem; background:rgba(255,255,255,0.05); border:1px solid rgba(212,175,55,0.3); color:#f5f1e7; border-radius:8px; font-size:1rem;">
-                            <option value="">Select a session</option>
-                            {% for session in sessions %}
-                            <option value="{{ session.id }}">
-                                {{ session.movie.title }} | {{ session.theatre.name }} | {{ session.start_time|date:"d M Y H:i" }} | ${{ session.unit_price }} | {{ session.seats_available }} seats
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                    <input type="hidden" name="session_id" id="session_id_input" value="{{ selected_session_id|default:'' }}" required />
 
                     <div class="booking-field">
                         <label for="quantity">Quantity</label>
-                        <input id="quantity" name="quantity" type="number" min="1" value="1" required />
+                        <div class="booking-quantity-control" data-quantity-control>
+                            <button class="booking-quantity-button" type="button" data-quantity-step="-1" aria-label="Decrease quantity">-</button>
+                            <span class="booking-quantity-value" data-quantity-value>1</span>
+                            <button class="booking-quantity-button" type="button" data-quantity-step="1" aria-label="Increase quantity">+</button>
+                        </div>
+                        <input id="quantity" name="quantity" type="hidden" min="1" max="10" value="1" required />
                     </div>
 
                     <div class="booking-bottom-bar booking-bottom-bar-end">
@@ -77,4 +84,40 @@
         </div>
     </section>
 </main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    const form = document.querySelector("[data-booking-form]");
+    if (!(form instanceof HTMLFormElement)) return;
+
+    const sessionInput = document.getElementById("session_id_input");
+    const cards = Array.from(document.querySelectorAll("[data-session-card]"));
+
+    function selectSession(card) {
+        const sessionId = card.getAttribute("data-session-id");
+        if (!sessionId || !(sessionInput instanceof HTMLInputElement)) return;
+
+        sessionInput.value = sessionId;
+        cards.forEach((item) => {
+            const selected = item === card;
+            item.classList.toggle("is-selected", selected);
+            item.setAttribute("aria-pressed", String(selected));
+        });
+    }
+
+    cards.forEach((card) => {
+        card.addEventListener("click", () => selectSession(card));
+    });
+
+    form.addEventListener("submit", (event) => {
+        if (sessionInput instanceof HTMLInputElement && !sessionInput.value) {
+            event.preventDefault();
+            alert("Please select a session before confirming your booking.");
+            cards[0]?.focus();
+        }
+    });
+})();
+</script>
 {% endblock %}

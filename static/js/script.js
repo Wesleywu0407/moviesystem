@@ -193,6 +193,64 @@ paymentForm?.addEventListener("submit", (event) => {
     event.preventDefault();
 });
 
+const bookingForm = document.querySelector("[data-booking-form]");
+if (bookingForm instanceof HTMLFormElement) {
+    const sessionInput = bookingForm.querySelector("#session_id_input");
+    const sessionCards = Array.from(document.querySelectorAll("[data-session-card]"));
+    const quantityInput = bookingForm.querySelector("#quantity");
+    const quantityValue = document.querySelector("[data-quantity-value]");
+    const quantityButtons = Array.from(document.querySelectorAll("[data-quantity-step]"));
+
+    const setSelectedSession = (sessionId) => {
+        if (!(sessionInput instanceof HTMLInputElement)) return;
+        sessionInput.value = sessionId;
+        sessionCards.forEach((card) => {
+            const isSelected = card.getAttribute("data-session-id") === sessionId;
+            card.classList.toggle("is-selected", isSelected);
+            card.setAttribute("aria-pressed", String(isSelected));
+        });
+    };
+
+    sessionCards.forEach((card) => {
+        card.addEventListener("click", () => {
+            const sessionId = card.getAttribute("data-session-id");
+            if (sessionId) setSelectedSession(sessionId);
+        });
+    });
+
+    if (sessionInput instanceof HTMLInputElement && sessionInput.value) {
+        setSelectedSession(sessionInput.value);
+    }
+
+    const syncQuantity = (nextValue) => {
+        if (!(quantityInput instanceof HTMLInputElement) || !(quantityValue instanceof HTMLElement)) return;
+        const value = Math.min(10, Math.max(1, nextValue));
+        quantityInput.value = String(value);
+        quantityValue.textContent = String(value);
+        quantityButtons.forEach((button) => {
+            const step = Number(button.getAttribute("data-quantity-step"));
+            button.disabled = (step < 0 && value <= 1) || (step > 0 && value >= 10);
+        });
+    };
+
+    quantityButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            if (!(quantityInput instanceof HTMLInputElement)) return;
+            syncQuantity(Number(quantityInput.value || "1") + Number(button.getAttribute("data-quantity-step")));
+        });
+    });
+
+    syncQuantity(Number(quantityInput instanceof HTMLInputElement ? quantityInput.value : "1"));
+
+    bookingForm.addEventListener("submit", (event) => {
+        if (sessionInput instanceof HTMLInputElement && !sessionInput.value) {
+            event.preventDefault();
+            sessionCards[0]?.focus();
+            window.alert("Please select a session before confirming your booking.");
+        }
+    });
+}
+
 const bookingFlow = document.querySelector("[data-booking-flow]");
 if (bookingFlow instanceof HTMLElement) {
     const panels = Array.from(document.querySelectorAll("[data-booking-panel]"));

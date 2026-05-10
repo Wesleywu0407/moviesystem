@@ -3,11 +3,19 @@ from django.contrib import admin
 from .models import Movie, Session
 
 
+def archive_movies(modeladmin, request, queryset):
+    queryset.update(is_archived=True)
+
+
+archive_movies.short_description = "Archive selected movies"
+
+
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ("title", "genre", "rating", "release_date", "is_featured")
-    list_filter = ("genre", "is_featured", "release_date")
+    list_display = ("title", "genre", "rating", "is_featured", "is_archived")
+    list_filter = ("genre", "is_featured", "is_archived")
     search_fields = ("title", "genre", "description")
+    actions = [archive_movies]
 
 
 @admin.register(Session)
