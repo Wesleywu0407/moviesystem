@@ -4137,6 +4137,12 @@ input {
 }
 
 @media (max-width: 640px) {
+    html,
+    body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
     body {
         padding-top: 74px;
     }
@@ -4145,9 +4151,25 @@ input {
         width: calc(100% - 24px);
     }
 
+    .site-header {
+        left: 0;
+        right: 0;
+    }
+
+    .nav-shell {
+        min-height: 70px;
+    }
+
+    .primary-nav,
+    .nav-actions {
+        left: 12px;
+        right: 12px;
+        max-width: calc(100vw - 24px);
+    }
+
     .brand-wordmark {
-        font-size: 1.1rem;
-        letter-spacing: 0.12em;
+        font-size: 0.98rem;
+        letter-spacing: 0.1em;
     }
 
     .brand-submark {
@@ -4341,15 +4363,77 @@ input {
     }
 
     .booking-hero {
-        padding-top: 12px;
+        padding: 20px 0 18px;
     }
 
     .booking-hero-title {
-        font-size: clamp(1.6rem, 11vw, 2.5rem);
+        font-size: clamp(1.5rem, 10vw, 2.35rem);
+        letter-spacing: 0.08em;
     }
 
     .booking-hero-copy {
         font-size: 0.88rem;
+    }
+
+    .booking-flow-section {
+        padding: 22px 0 42px;
+    }
+
+    .booking-section-title {
+        margin-bottom: 14px;
+        font-size: 0.9rem;
+        letter-spacing: 0.1em;
+    }
+
+    .booking-showtime-card {
+        padding: 18px 16px 18px 22px;
+    }
+
+    .booking-session-title {
+        padding-right: 36px;
+        font-size: 1.14rem;
+        line-height: 1.28;
+    }
+
+    .booking-session-detail {
+        align-items: flex-start;
+        gap: 8px;
+        margin-top: 10px;
+        font-size: 0.84rem;
+        line-height: 1.4;
+    }
+
+    .booking-session-meta {
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .booking-session-meta span {
+        min-height: 30px;
+        padding: 0 10px;
+        font-size: 0.76rem;
+    }
+
+    .booking-session-check {
+        top: 14px;
+        right: 14px;
+        width: 28px;
+        height: 28px;
+    }
+
+    .booking-payment-form {
+        margin-top: 12px;
+    }
+
+    .booking-quantity-control {
+        justify-content: flex-start;
+        gap: 14px;
+    }
+
+    .booking-payment-form .booking-primary-button {
+        min-height: 56px;
+        font-size: 0.92rem;
+        letter-spacing: 0.08em;
     }
 
     .booking-step {
@@ -4398,6 +4482,11 @@ input {
         font-size: clamp(2.1rem, 14vw, 3rem);
     }
 
+    .admin-head-row {
+        flex-direction: column;
+        gap: 14px;
+    }
+
     .admin-subtitle {
         font-size: 0.96rem;
         margin-bottom: 22px;
@@ -4410,6 +4499,78 @@ input {
     .admin-search {
         min-height: 56px;
         padding-inline: 16px;
+    }
+
+    .admin-data-card {
+        border-radius: 16px;
+        margin-inline: -2px;
+    }
+
+    .admin-table {
+        min-width: 0;
+        display: block;
+    }
+
+    .admin-table thead {
+        display: none;
+    }
+
+    .admin-table tbody,
+    .admin-table tr,
+    .admin-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .admin-table tr {
+        padding: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .admin-table tr:last-child {
+        border-bottom: 0;
+    }
+
+    .admin-table td {
+        padding: 7px 0;
+        border-bottom: 0;
+        font-size: 0.9rem;
+    }
+
+    .admin-table td:first-child {
+        color: var(--gold);
+        font-size: 1.05rem;
+        font-weight: 800;
+    }
+
+    .admin-actions-cell {
+        justify-content: flex-start;
+        gap: 18px;
+        margin-top: 4px;
+    }
+
+    .admin-form-card {
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .admin-form-actions {
+        justify-content: stretch;
+    }
+
+    .admin-form-actions .cine-button,
+    .admin-form-actions button {
+        width: 100%;
+    }
+
+    .site-messages {
+        width: calc(100% - 24px);
+        margin-top: 14px;
     }
 }
 
