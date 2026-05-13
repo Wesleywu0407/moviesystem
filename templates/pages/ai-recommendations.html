@@ -7,58 +7,273 @@
 <main>
     <section class="ai-recommendations-section">
         <div class="container">
-            <header class="ai-header">
+            <section class="ai-critic-hero" aria-label="AI film critic">
+                <div class="ai-taste-card">
+                    <div class="ai-taste-orbit" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="ai-taste-grid" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="ai-taste-head">
+                        <p class="section-kicker">Based on your recent watch</p>
+                        <h2>YOUR TASTE PROFILE</h2>
+                    </div>
+                    <div class="ai-tags ai-profile-tags">
+                        <span>{{ taste_anchor|default:"Interstellar" }}</span>
+                    </div>
+                    <div class="ai-taste-divider"></div>
+                    <p class="ai-taste-label">Detected taste signals</p>
+                    <ul class="ai-taste-list">
+                        {% if recommended %}
+                            {% for rec in recommended|slice:":3" %}
+                                {% if rec.genre %}<li>{{ rec.genre }}</li>{% endif %}
+                                {% if rec.category %}<li>{{ rec.category }}</li>{% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <li>Ambitious science-fiction</li>
+                            <li>Emotional storytelling</li>
+                            <li>Mind-bending concepts</li>
+                            <li>High-stakes tension</li>
+                            <li>Cinematic world-building</li>
+                        {% endif %}
+                    </ul>
+                    <p class="ai-taste-status">Profile analysed · recommendations ready</p>
+                </div>
+                <div class="ai-critic-copy">
+                    <div class="ai-critic-kicker">
+                        <span class="ai-critic-avatar" id="critic-avatar" aria-hidden="true">
+                            <span class="ai-critic-avatar-hat"></span>
+                            <span class="ai-critic-avatar-face">
+                                <span class="ai-critic-avatar-eye"></span>
+                                <span class="ai-critic-avatar-eye"></span>
+                            </span>
+                            <span class="ai-critic-avatar-coat"></span>
+                            <span class="ai-critic-avatar-cravat"></span>
+                        </span>
+                        <p class="section-kicker">AI FILM CRITIC</p>
+                    </div>
+                    <h1 class="ai-title ai-critic-title">THE CRITIC</h1>
+                    <p class="ai-subtitle">
+                        Your personal AI film critic studies your taste profile and curates the films you are most likely to enjoy tonight.
+                    </p>
+                    <a class="cine-button cine-button-gold" href="#ai-picks" id="critic-picks-button">
+                        <svg class="icon"><use href="#i-play"></use></svg>
+                        <span>View My Picks</span>
+                    </a>
+                </div>
+            </section>
+
+            <header class="ai-header" id="ai-picks">
                 <h1 class="ai-title">
-                    <svg class="icon"><use href="#i-sparkle"></use></svg>
-                    <span>AI Recommendations</span>
+                    <span class="ai-title-emblem" aria-hidden="true">
+                        <span class="ai-title-emblem-ring ai-title-emblem-ring-outer"></span>
+                        <span class="ai-title-emblem-ring ai-title-emblem-ring-inner"></span>
+                        <span class="ai-title-emblem-core"></span>
+                        <span class="ai-title-emblem-spark"></span>
+                        <span class="ai-title-emblem-flare"></span>
+                    </span>
+                    <span>AI RECOMMENDATIONS</span>
                 </h1>
                 <p class="ai-subtitle">
-                    Personalized picks generated from your booking history and CINEVERSE catalog.
+                    Personalised picks based on your recent watch history and taste profile.
                 </p>
             </header>
 
             <div class="ai-stats" aria-label="AI recommendation stats">
                 <article class="ai-stat">
                     <svg class="icon"><use href="#i-trend"></use></svg>
-                    <strong>{{ recommended|length }}</strong>
+                    <strong>{{ recommendation_details|length }}</strong>
                     <span>Recommendations</span>
                 </article>
                 <article class="ai-stat">
                     <svg class="icon"><use href="#i-film"></use></svg>
-                    <strong>{{ user_history|length }}</strong>
+                    <strong>{{ booking_count }}</strong>
                     <span>Booked Films</span>
                 </article>
                 <article class="ai-stat">
                     <svg class="icon"><use href="#i-sparkle"></use></svg>
-                    <strong>{% if ai_used %}Claude AI{% else %}Smart Fallback{% endif %}</strong>
-                    <span>Engine</span>
+                    <strong>API</strong>
+                    <span>Powered</span>
+                    <small>Live recommendations</small>
                 </article>
             </div>
 
             {% if user_history %}
-                <p class="ai-subtitle" style="margin-bottom: 1.25rem;">Watch History: {{ user_history|join:", " }}</p>
+                <section class="ai-profile">
+                    <h2 class="ai-profile-title">Your Taste Profile</h2>
+                    <div class="ai-tags ai-profile-tags">
+                        {% for title in user_history %}
+                            <span>{{ title }}</span>
+                        {% endfor %}
+                    </div>
+                </section>
             {% endif %}
 
-            <div class="ai-grid">
-                {% for rec in recommended %}
-                    <article class="ai-card ai-card-recommendation">
-                        <div class="ai-card-content">
-                            <p class="ai-match">
-                                <svg class="icon"><use href="#i-sparkle"></use></svg>
-                                <span>{{ rec.match }}% Match</span>
-                            </p>
-                            <h2>{{ rec.title }}</h2>
-                            <p class="ai-quote">"{{ rec.reason }}"</p>
-                        </div>
-                    </article>
-                {% empty %}
-                    <article class="ai-card">
-                        <div class="ai-card-content">
-                            <h2>No Recommendations Yet</h2>
-                            <p class="ai-quote">Claude recommendations will appear here after the API key is configured and the catalog has available movies.</p>
-                        </div>
-                    </article>
-                {% endfor %}
+            {{ recommendation_details|json_script:"ai-recommendation-data" }}
+
+            <div class="ai-layout">
+                <div class="ai-recommendation-list" aria-label="AI recommendation list">
+                    {% for rec in recommended %}
+                        <article
+                            class="ai-card ai-card-recommendation {% if forloop.first %}is-selected{% endif %}"
+                            data-rec-key="{{ rec.title|slugify }}"
+                            data-rec-index="{{ forloop.counter0 }}"
+                            role="button"
+                            tabindex="0"
+                        >
+                            <div class="ai-card-content">
+                                <p class="ai-match">
+                                    <svg class="icon"><use href="#i-sparkle"></use></svg>
+                                    <span data-ai-match data-base-match="{{ rec.match }}">✦ {{ rec.match }}% MATCH</span>
+                                </p>
+                                <h2>{{ rec.title }}</h2>
+                                <div class="ai-tags ai-card-tags">
+                                    {% if rec.year %}<span>{{ rec.year }}</span>{% endif %}
+                                    {% if rec.runtime_mins %}<span>{{ rec.runtime_mins }} min</span>{% endif %}
+                                    {% if rec.genre %}<span>{{ rec.genre }}</span>{% endif %}
+                                </div>
+                                <p class="ai-card-label">Why this matches you:</p>
+                                <p class="ai-quote">{{ rec.reason|default:"A strong cinematic match based on your recent viewing patterns and preference signals." }}</p>
+                                {% if taste_anchor %}
+                                    <p class="ai-card-label">Because you watched:</p>
+                                    <p class="ai-logic">{{ taste_anchor|default:"Interstellar" }}</p>
+                                {% endif %}
+                                <div class="ai-card-actions">
+                                    <button
+                                        type="button"
+                                        class="ai-feedback"
+                                        data-ai-feedback="good"
+                                        aria-pressed="false"
+                                    >
+                                        <span class="ai-feedback-emoji">👍</span>
+                                        <span>Good match</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="ai-feedback"
+                                        data-ai-feedback="bad"
+                                        aria-pressed="false"
+                                    >
+                                        <span class="ai-feedback-emoji">👎</span>
+                                        <span>Not for me</span>
+                                    </button>
+                                    <p class="ai-feedback-note">Help us improve your recommendations</p>
+                                </div>
+                            </div>
+                        </article>
+                    {% empty %}
+                        <article class="ai-card ai-card-empty {% if ai_error %}is-error{% endif %}">
+                            <div class="ai-card-content">
+                                {% if ai_error %}
+                                    <h2>We could not generate recommendations right now.</h2>
+                                    <p class="ai-quote">Please try again.</p>
+                                {% else %}
+                                    <h2>No recommendations yet.</h2>
+                                    <p class="ai-quote">Watch or select a film to generate AI picks.</p>
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+
+                    {% if supplemental_recommendations %}
+                        <section class="ai-supplemental" aria-label="You might also like">
+                            <h2 class="ai-profile-title">You might also like</h2>
+                            {% for rec in supplemental_recommendations %}
+                                <article
+                                    class="ai-card ai-card-recommendation ai-card-supplemental"
+                                    data-rec-key="{{ rec.title|slugify }}"
+                                    data-rec-index="{{ forloop.counter0|add:recommended_count }}"
+                                    role="button"
+                                    tabindex="0"
+                                >
+                                    <div class="ai-card-content">
+                                        <p class="ai-match">
+                                            <svg class="icon"><use href="#i-sparkle"></use></svg>
+                                            <span data-ai-match data-base-match="{{ rec.match }}">✦ {{ rec.match }}% MATCH</span>
+                                        </p>
+                                        <h2>{{ rec.title }}</h2>
+                                        <div class="ai-tags ai-card-tags">
+                                            {% if rec.year %}<span>{{ rec.year }}</span>{% endif %}
+                                            {% if rec.runtime_mins %}<span>{{ rec.runtime_mins }} min</span>{% endif %}
+                                            {% if rec.genre %}<span>{{ rec.genre }}</span>{% endif %}
+                                        </div>
+                                        <p class="ai-card-label">Why this matches you:</p>
+                                        <p class="ai-quote">{{ rec.reason|default:"A strong cinematic match based on your recent viewing patterns and preference signals." }}</p>
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </section>
+                    {% endif %}
+                </div>
+
+                {% if recommended %}
+                    {% with selected=recommended.0 %}
+                        <aside class="ai-detail-panel" data-ai-detail-panel aria-label="Selected recommended film">
+                            <div class="ai-detail-poster-wrap">
+                                {% if selected.poster_url %}
+                                    <img
+                                        src="{{ selected.poster_url }}"
+                                        alt="{{ selected.title }} poster"
+                                        class="ai-detail-poster"
+                                        data-ai-detail-poster
+                                    />
+                                    <div class="ai-detail-poster-placeholder" data-ai-detail-placeholder hidden>
+                                        <span data-ai-detail-placeholder-title>{{ selected.title }}</span>
+                                    </div>
+                                {% else %}
+                                    <img
+                                        src=""
+                                        alt=""
+                                        class="ai-detail-poster"
+                                        data-ai-detail-poster
+                                        hidden
+                                    />
+                                    <div class="ai-detail-poster-placeholder" data-ai-detail-placeholder>
+                                        <span data-ai-detail-placeholder-title>{{ selected.title }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="ai-detail-content">
+                                <p class="ai-detail-label">Currently selected</p>
+                                <h2 data-ai-detail-title>{{ selected.title }}</h2>
+                                <p class="ai-detail-meta">
+                                    <span data-ai-detail-year>{{ selected.year }}</span>
+                                    <span data-ai-detail-rating>{{ selected.rating }}</span>
+                                </p>
+                                <div class="ai-tags ai-detail-tags">
+                                    {% if selected.genre %}<span data-ai-detail-genre>{{ selected.genre }}</span>{% else %}<span data-ai-detail-genre hidden></span>{% endif %}
+                                    {% if selected.runtime_mins %}<span data-ai-detail-runtime>{{ selected.runtime_mins }} min</span>{% else %}<span data-ai-detail-runtime hidden></span>{% endif %}
+                                </div>
+                                <div class="ai-detail-stars" aria-label="Film rating">
+                                    <svg class="icon"><use href="#i-star"></use></svg>
+                                    <svg class="icon"><use href="#i-star"></use></svg>
+                                    <svg class="icon"><use href="#i-star"></use></svg>
+                                    <svg class="icon"><use href="#i-star"></use></svg>
+                                    <svg class="icon"><use href="#i-star"></use></svg>
+                                    <span data-ai-detail-star-label>{{ selected.rating }}</span>
+                                </div>
+                                <div class="ai-detail-actions">
+                                    {% if selected.trailer_url %}
+                                        <a class="cine-button cine-button-outline" href="{{ selected.trailer_url }}" data-ai-detail-trailer>
+                                            ▶ Watch Trailer
+                                        </a>
+                                    {% else %}
+                                        <a class="cine-button cine-button-outline is-disabled" href="#" data-ai-detail-trailer aria-disabled="true">
+                                            ▶ Watch Trailer
+                                        </a>
+                                    {% endif %}
+                                    <a class="cine-button cine-button-gold" href="{% url 'booking' %}">
+                                        Book This Film
+                                    </a>
+                                </div>
+                            </div>
+                        </aside>
+                    {% endwith %}
+                {% endif %}
             </div>
         </div>
     </section>

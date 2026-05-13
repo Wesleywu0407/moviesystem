@@ -455,21 +455,186 @@ if (adminTabs.length && adminPanels.length) {
     }
 }
 
-const aiFeedbackButtons = Array.from(document.querySelectorAll("[data-ai-feedback]"));
-aiFeedbackButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-        const cardActions = button.closest(".ai-card-actions");
-        if (!(cardActions instanceof HTMLElement)) return;
+const AI_FEEDBACK_STORAGE_KEY = "cineverse-ai-feedback";
+const aiRecommendationCards = Array.from(document.querySelectorAll("[data-rec-key]"));
+const aiRecommendationDataScript = document.getElementById("ai-recommendation-data");
+let aiRecommendationData = [];
 
-        const siblings = cardActions.querySelectorAll("[data-ai-feedback]");
-        siblings.forEach((sibling) => {
-            sibling.classList.remove("is-selected");
-            sibling.setAttribute("aria-pressed", "false");
-        });
+if (aiRecommendationDataScript) {
+    try {
+        aiRecommendationData = JSON.parse(aiRecommendationDataScript.textContent || "[]");
+    } catch (error) {
+        aiRecommendationData = [];
+    }
+}
 
-        button.classList.add("is-selected");
-        button.setAttribute("aria-pressed", "true");
+const readAiFeedbackState = () => {
+    try {
+        const savedValue = window.localStorage.getItem(AI_FEEDBACK_STORAGE_KEY);
+        return savedValue ? JSON.parse(savedValue) : {};
+    } catch (error) {
+        return {};
+    }
+};
+
+const writeAiFeedbackState = (state) => {
+    try {
+        window.localStorage.setItem(AI_FEEDBACK_STORAGE_KEY, JSON.stringify(state));
+    } catch (error) {
+        // Ignore storage write failures in private browsing or restricted contexts.
+    }
+};
+
+const updateAiMatchDisplay = (card, selectedValue) => {
+    if (!(card instanceof HTMLElement)) return;
+
+    const matchElement = card.querySelector("[data-ai-match]");
+    if (!(matchElement instanceof HTMLElement)) return;
+
+    const baseMatch = Number.parseInt(matchElement.getAttribute("data-base-match") ?? "0", 10);
+    let adjustedMatch = baseMatch;
+
+    if (selectedValue === "good") {
+        adjustedMatch = Math.min(baseMatch + 2, 100);
+    } else if (selectedValue === "bad") {
+        adjustedMatch = Math.max(baseMatch - 10, 0);
+    }
+
+    matchElement.textContent = `✦ ${adjustedMatch}% MATCH`;
+};
+
+const applyAiFeedbackState = (card, selectedValue) => {
+    if (!(card instanceof HTMLElement)) return;
+
+    const buttons = card.querySelectorAll("[data-ai-feedback]");
+    buttons.forEach((button) => {
+        const isSelected = button.getAttribute("data-ai-feedback") === selectedValue;
+        button.classList.toggle("is-selected", isSelected);
+        button.setAttribute("aria-pressed", isSelected ? "true" : "false");
     });
+
+    updateAiMatchDisplay(card, selectedValue);
+};
+
+const aiFeedbackState = readAiFeedbackState();
+
+const updateAiDetailPanel = (index) => {
+    const panel = document.querySelector("[data-ai-detail-panel]");
+    if (!(panel instanceof HTMLElement)) return;
+
+    const recommendation = aiRecommendationData[index];
+    if (!recommendation) return;
+
+    const titleElement = panel.querySelector("[data-ai-detail-title]");
+    const yearElement = panel.querySelector("[data-ai-detail-year]");
+    const ratingElement = panel.querySelector("[data-ai-detail-rating]");
+    const starLabelElement = panel.querySelector("[data-ai-detail-star-label]");
+    const genreElement = panel.querySelector("[data-ai-detail-genre]");
+    const runtimeElement = panel.querySelector("[data-ai-detail-runtime]");
+    const posterElement = panel.querySelector("[data-ai-detail-poster]");
+    const placeholderElement = panel.querySelector("[data-ai-detail-placeholder]");
+    const placeholderTitleElement = panel.querySelector("[data-ai-detail-placeholder-title]");
+    const trailerLink = panel.querySelector("[data-ai-detail-trailer]");
+
+    if (titleElement) titleElement.textContent = recommendation.title || "";
+    if (yearElement) yearElement.textContent = recommendation.year || "";
+    if (ratingElement) ratingElement.textContent = recommendation.rating || "Unrated";
+    if (starLabelElement) starLabelElement.textContent = recommendation.rating || "Unrated";
+    if (genreElement instanceof HTMLElement) {
+        if (recommendation.genre) {
+            genreElement.textContent = recommendation.genre;
+            genreElement.hidden = false;
+        } else {
+            genreElement.hidden = true;
+        }
+    }
+    if (runtimeElement instanceof HTMLElement) {
+        if (recommendation.runtime_mins) {
+            runtimeElement.textContent = `${recommendation.runtime_mins} min`;
+            runtimeElement.hidden = false;
+        } else {
+            runtimeElement.hidden = true;
+        }
+    }
+    if (placeholderTitleElement) placeholderTitleElement.textContent = recommendation.title || "";
+
+    if (posterElement instanceof HTMLImageElement && placeholderElement instanceof HTMLElement) {
+        if (recommendation.poster_url) {
+            posterElement.src = recommendation.poster_url;
+            posterElement.alt = `${recommendation.title} poster`;
+            posterElement.hidden = false;
+            placeholderElement.hidden = true;
+        } else {
+            posterElement.removeAttribute("src");
+            posterElement.alt = "";
+            posterElement.hidden = true;
+            placeholderElement.hidden = false;
+        }
+    }
+
+    if (trailerLink instanceof HTMLAnchorElement) {
+        if (recommendation.trailer_url) {
+            trailerLink.href = recommendation.trailer_url;
+            trailerLink.classList.remove("is-disabled");
+            trailerLink.setAttribute("aria-disabled", "false");
+        } else {
+            trailerLink.href = "#";
+            trailerLink.classList.add("is-disabled");
+            trailerLink.setAttribute("aria-disabled", "true");
+        }
+    }
+
+    aiRecommendationCards.forEach((card, cardIndex) => {
+        card.classList.toggle("is-selected", cardIndex === index);
+    });
+};
+
+aiRecommendationCards.forEach((card) => {
+    if (!(card instanceof HTMLElement)) return;
+
+    const cardKey = card.getAttribute("data-rec-key");
+    if (!cardKey) return;
+    const cardIndex = Number.parseInt(card.getAttribute("data-rec-index") ?? "0", 10);
+
+    applyAiFeedbackState(card, aiFeedbackState[cardKey] ?? "");
+
+    card.addEventListener("click", (event) => {
+        const target = event.target;
+        if (target instanceof HTMLElement && target.closest("button, a")) return;
+        updateAiDetailPanel(cardIndex);
+    });
+
+    card.addEventListener("mouseenter", () => {
+        updateAiDetailPanel(cardIndex);
+    });
+
+    card.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        updateAiDetailPanel(cardIndex);
+    });
+
+    const buttons = card.querySelectorAll("[data-ai-feedback]");
+    buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const selectedValue = button.getAttribute("data-ai-feedback") ?? "";
+            aiFeedbackState[cardKey] = selectedValue;
+            writeAiFeedbackState(aiFeedbackState);
+            applyAiFeedbackState(card, selectedValue);
+        });
+    });
+});
+
+const criticPicksButton = document.getElementById("critic-picks-button");
+criticPicksButton?.addEventListener("click", (event) => {
+    const target = document.getElementById("ai-picks");
+    if (!target) return;
+    event.preventDefault();
+    const criticAvatar = document.getElementById("critic-avatar");
+    criticAvatar?.classList.remove("is-pulsing");
+    window.setTimeout(() => criticAvatar?.classList.add("is-pulsing"), 0);
+    window.setTimeout(() => criticAvatar?.classList.remove("is-pulsing"), 760);
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 const refreshRecommendationsButton = document.getElementById("refresh-recommendations");

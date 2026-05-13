@@ -298,38 +298,138 @@ def _parse_ai_json_recommendations(raw_text):
     return []
 
 
+def _hydrate_ai_recommendations(recommendations, movies):
+    movie_lookup = {movie.title.lower(): movie for movie in movies}
+    hydrated = []
+
+    for recommendation in recommendations:
+        if not isinstance(recommendation, dict):
+            continue
+
+        title = str(recommendation.get("title", "")).strip()
+        movie = movie_lookup.get(title.lower())
+
+        hydrated.append(
+            {
+                "title": title,
+                "reason": recommendation.get("reason", ""),
+                "match": recommendation.get("match", 0),
+                "category": recommendation.get("category", ""),
+                "year": movie.release_date.year if movie and movie.release_date else "",
+                "runtime_mins": movie.duration_mins if movie else "",
+                "genre": movie.genre if movie else "",
+                "poster_url": movie.poster_url if movie else "",
+                "rating": movie.rating if movie else "",
+                "trailer_url": getattr(movie, "trailer_url", "") if movie else "",
+            }
+        )
+
+    return hydrated
+
+
+def _movie_to_recommendation(movie, category="You Might Also Like"):
+    description = (movie.description or "").strip()
+    reason = description.split(".")[0].strip() if description else f"A strong CINEVERSE catalog pick for {movie.genre} fans"
+    if reason and not reason.endswith("."):
+        reason = f"{reason}."
+
+    return {
+        "title": movie.title,
+        "reason": reason,
+        "match": 84,
+        "category": category,
+        "year": movie.release_date.year if movie.release_date else "",
+        "runtime_mins": movie.duration_mins,
+        "genre": movie.genre,
+        "poster_url": movie.poster_url,
+        "rating": movie.rating,
+        "trailer_url": getattr(movie, "trailer_url", ""),
+        "is_placeholder": True,
+    }
+
+
+def _get_supplemental_recommendations(recommended, movies):
+    if len(recommended) != 1:
+        return []
+
+    selected = recommended[0]
+    selected_titles = {item.get("title", "").lower() for item in recommended}
+    selected_genre = (selected.get("genre") or "").lower()
+
+    similar_movies = [
+        movie
+        for movie in movies
+        if movie.title.lower() not in selected_titles and selected_genre and movie.genre.lower() == selected_genre
+    ]
+    other_movies = [
+        movie
+        for movie in movies
+        if movie.title.lower() not in selected_titles and movie not in similar_movies
+    ]
+
+    return [_movie_to_recommendation(movie) for movie in (similar_movies + other_movies)[:3]]
+
+
 def ai_recommendations(request):
-    movies = Movie.objects.filter(is_archived=False)
+    movies = list(Movie.objects.filter(is_archived=False))
     recommended = []
+    supplemental_recommendations = []
     user_history = []
+    booking_count = 0
+    raw = ""
+    ai_error = False
 
     if request.user.is_authenticated:
         bookings = Booking.objects.filter(user=request.user).select_related("session__movie")
-        user_history = [booking.session.movie.title for booking in bookings]
+        booking_count = bookings.count()
+        user_history = list(dict.fromkeys([booking.session.movie.title for booking in bookings]))
 
     movie_list = [f"{movie.title} ({movie.genre}, rating {movie.rating})" for movie in movies]
 
     if user_history:
         prompt = f"""User watched: {', '.join(set(user_history))}.
 Available movies: {', '.join(movie_list)}.
-Recommend 3 movies with reasons.
-Reply ONLY in JSON format, no markdown:
-[{{"title": "Movie Title", "reason": "Why they will love it", "match": 95}}]"""
+Recommend exactly 3 movies the user has NOT watched yet.
+For each movie:
+- "category" must be a short label, 2 to 6 words only, like:
+  "Sci-Fi Pick"
+  "Nolan Vibes"
+  "Trending Now"
+  "Hidden Gem"
+- "reason" must be a fuller explanation in 1 sentence about why this movie fits the user's taste.
+
+Do NOT recommend movies the user has already watched.
+Watched movies: {', '.join(set(user_history))}
+
+Reply ONLY in JSON format:
+[{{
+  "title": "Movie Title",
+  "reason": "A detailed one-sentence explanation of why they will love it",
+  "match": 95,
+  "category": "Sci-Fi Pick"
+}}]"""
     else:
         prompt = f"""Available movies: {', '.join(movie_list)}.
-Recommend 3 movies for a new cinema user.
+Recommend exactly 3 movies for a new cinema user.
+For each movie:
+- "category" must be a short label, 2 to 6 words only, like:
+  "Popular Choice"
+  "Critics' Favorite"
+  "Trending Now"
+- "reason" must be a fuller explanation in 1 sentence about why this movie is a strong pick for a new customer.
 Reply ONLY in JSON format, no markdown:
-[{{"title": "Movie Title", "reason": "Why they will love it", "match": 90}}]"""
+[{{"title": "Movie Title", "reason": "A detailed one-sentence explanation", "match": 90, "category": "Popular Choice"}}]"""
 
     try:
         client = OpenAI(api_key=settings.OPENAI_API_KEY)
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-5.4-mini",
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=500,
+            max_completion_tokens=500,
         )
         raw = response.choices[0].message.content
-        recommended = _parse_ai_json_recommendations(raw)[:3]
+        print(f"RAW: {raw}")
+        recommended = _hydrate_ai_recommendations(_parse_ai_json_recommendations(raw)[:3], movies)
     except Exception as e:
         import logging
 
@@ -337,15 +437,25 @@ Reply ONLY in JSON format, no markdown:
         logger.error(f"AI recommendation error: {e}")
         print(f"AI ERROR: {e}")  # also print to console
         recommended = []
+        ai_error = True
+
+    supplemental_recommendations = _get_supplemental_recommendations(recommended, movies)
+    detail_items = recommended + supplemental_recommendations
 
     return render(
         request,
         "pages/ai-recommendations.html",
         {
             "recommended": recommended,
+            "recommended_count": len(recommended),
+            "supplemental_recommendations": supplemental_recommendations,
+            "recommendation_details": detail_items,
             "user_history": user_history,
+            "booking_count": booking_count or len(user_history),
+            "taste_anchor": user_history[0] if user_history else "Interstellar",
             "movies": movies,
             "ai_used": bool(recommended),
+            "ai_error": ai_error,
         },
     )
 
